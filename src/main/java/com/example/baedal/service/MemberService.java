@@ -33,4 +33,9 @@ public class MemberService {
                         .build()
         );
     }
+    @Transactional
+    public ResponseDto<?> getAllMember() {
+        return ResponseDto.success(memberRepository.findAll());
+    }
+
 }
