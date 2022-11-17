@@ -12,15 +12,15 @@ public class MemberController {
     private final MemberService memberService;
 
     //멤버등록
-    @PostMapping (value = "/api/member/signup")
+    @PostMapping (value = "/api/members/signup")
     public ResponseDto<?> signup(@RequestBody MemberRequestDto requestDto) {
         return memberService.createMember(requestDto);
     }
-    @GetMapping (value = "api/member")
+    @GetMapping (value = "/api/members")
     public ResponseDto<?> getAllMember() {
         return memberService.getAllMember();
     }
-    @GetMapping (value = "api/member/{id}")
+    @GetMapping (value = "/api/members/{id}")
     public ResponseDto<?> getMember(@PathVariable Long id) {
         return memberService.getOneMember(id);
     }
