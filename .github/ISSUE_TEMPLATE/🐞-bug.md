@@ -2,8 +2,8 @@
 name: "\U0001F41E Bug"
 about: Create a report to help us improve
 title: "[Bug] "
-labels: "\U0001F41E 버그, \U0001F4A1 기능"
-assignees: celinaym
+labels: "\U0001F41E 버그"
+assignees: ''
 
 ---
 
