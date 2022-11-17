@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StoreController {
     private final StoreService storeService;
 
-    @GetMapping (value = "api/store")
+    @GetMapping (value = "api/stores")
     public ResponseDto<?> getAllStore() {
         return storeService.getAllStore();
     }
