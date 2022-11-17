@@ -25,5 +25,6 @@ public class Store extends Timestamped{
     private String address;
 
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private Category category;
 }
