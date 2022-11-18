@@ -1,0 +1,40 @@
+version: '3.1'
+services:
+  MySQL:
+    image: mysql:latest
+    container_name: MySQL
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: passwd
+      MYSQL_DATABASE: baedal
+      MYSQL_USER: baedal
+      MYSQL_PASSWORD: passwd
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/conf.d:/etc/mysql/conf.d
+      - ./mysql/log:/var/log/mysql
+    networks:
+      - baedal-network
+
+  PostgreSQL:
+    image: postgres:latest
+    container_name: PostgreSQL
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: passwd
+      POSTGRES_DB: baedal
+      POSTGRES_USER: baedal
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgreSQL/data:/var/lib/postgresql/data
+      - ./postgreSQL/conf.d:/etc/postgresql/conf.d
+      - ./postgreSQL/log:/var/log/postgresql
+    networks:
+      - baedal-network
+
+networks:
+  baedal-network:
+    driver: bridge
