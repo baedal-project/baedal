@@ -27,7 +27,7 @@ public class OrderHasItem {
     //FK
     //@JsonBackReference
     @ManyToOne
-    @JoinColumn(name="item_Id", nullable = false)
+    @JoinColumn(name="item_Id", nullable = true)
     private Item item;
 
     public OrderHasItem(Item item){

@@ -30,6 +30,10 @@ public class Store extends Timestamped{
     @Enumerated(value = EnumType.STRING)
     private Category category;
 
+    //평균 평점
+    @Column(nullable = false)
+    private double avgStar = 0.00;
+
     @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "store",
@@ -37,4 +41,12 @@ public class Store extends Timestamped{
             orphanRemoval = true
     )
     private List<Item> items = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "store",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Likes> likes = new ArrayList<>();
 }
