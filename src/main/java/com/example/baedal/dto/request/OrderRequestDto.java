@@ -17,8 +17,7 @@ public class OrderRequestDto {
     private Long storeId;
     //고유값(itemId)
     private List<Long> itemId;
-
-    private int amount;
+    private List<Integer> amount;
     private Long memberId;
 
 }
