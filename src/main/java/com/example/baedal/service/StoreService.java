@@ -7,14 +7,15 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class StoreService {
     private final StoreRepository storeRepository;
 
 
     @Transactional
     public ResponseDto<?> getAllStore() {
+
         return ResponseDto.success(storeRepository.findAll());
     }
 }
