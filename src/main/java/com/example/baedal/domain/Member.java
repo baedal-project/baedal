@@ -30,4 +30,12 @@ public class Member extends Timestamped {
             orphanRemoval = true
     )
     private List<Orders> orders = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "member",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Likes> likes = new ArrayList<>();
 }
