@@ -2,6 +2,7 @@ package com.example.baedal.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,13 +20,13 @@ public class OrderHasItem {
 
     //FK
     //주문메뉴 테이블
-    //@JsonBackReference
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="orders_Id", nullable = true)
     private Orders orders;
 
     //FK
-    //@JsonBackReference
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="item_Id", nullable = true)
     private Item item;

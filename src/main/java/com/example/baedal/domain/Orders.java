@@ -1,6 +1,7 @@
 package com.example.baedal.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +20,8 @@ public class Orders extends Timestamped{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @JsonBackReference
+    //@JsonBackReference
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="member_Id", nullable = false)
     private Member member;

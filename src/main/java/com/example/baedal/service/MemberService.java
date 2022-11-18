@@ -8,7 +8,7 @@ import com.example.baedal.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -34,12 +34,12 @@ public class MemberService {
                         .build()
         );
     }
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseDto<?> getAllMember() {
         return ResponseDto.success(memberRepository.findAll());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseDto<?> getOneMember(Long id) {
         Member member =isPresentMember(id);
         if (null == member) {
@@ -56,7 +56,7 @@ public class MemberService {
     );
 
     }
-    @Transactional
+    @Transactional(readOnly = true)
     public Member isPresentMember(Long id) {
         Optional<Member> optionalMember = memberRepository.findById(id);
         return optionalMember.orElse(null);
