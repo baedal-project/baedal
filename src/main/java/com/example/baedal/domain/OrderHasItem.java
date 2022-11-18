@@ -21,7 +21,7 @@ public class OrderHasItem {
     //주문메뉴 테이블
     //@JsonBackReference
     @ManyToOne
-    @JoinColumn(name="orders_Id", nullable = false)
+    @JoinColumn(name="orders_Id", nullable = true)
     private Orders orders;
 
     //FK
