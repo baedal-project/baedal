@@ -12,7 +12,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./mysql/data:/var/lib/mysql
       - ./mysql/conf.d:/etc/mysql/conf.d
       - ./mysql/log:/var/log/mysql
     networks:
@@ -29,7 +29,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgreSQL:/var/lib/postgresql/data
+      - ./postgreSQL/data:/var/lib/postgresql/data
       - ./postgreSQL/conf.d:/etc/postgresql/conf.d
       - ./postgreSQL/log:/var/log/postgresql
     networks:
