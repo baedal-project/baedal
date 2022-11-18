@@ -27,8 +27,8 @@ public class Store extends Timestamped{
     private String address;
 
     @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private Category category;
+//    @Enumerated(value = EnumType.STRING)
+    private String category;
 
     //평균 평점
     @Column(nullable = false)
