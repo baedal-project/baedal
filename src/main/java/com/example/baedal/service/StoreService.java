@@ -5,7 +5,7 @@ import com.example.baedal.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -13,7 +13,7 @@ public class StoreService {
     private final StoreRepository storeRepository;
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseDto<?> getAllStore() {
 
         return ResponseDto.success(storeRepository.findAll());

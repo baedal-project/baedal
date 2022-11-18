@@ -3,6 +3,7 @@ package com.example.baedal.domain;
 
 import com.example.baedal.shared.Category;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,7 +42,7 @@ public class Item extends Timestamped{
     )
     private List<OrderHasItem> orderHasItems = new ArrayList<>();
 
-    @JsonBackReference
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="store_Id", nullable = true)
     private Store store;

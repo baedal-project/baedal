@@ -26,8 +26,8 @@ public class OrderController {
 
     //주문 상세 조회
     @GetMapping(value = "/api/orders/{orderId}")
-    public ResponseDto<?> getOrder(@PathVariable Long id){
-        return orderService.getOneOrder(id);
+    public ResponseDto<?> getOrder(@PathVariable Long orderId){
+        return orderService.getOneOrder(orderId);
     }
 
 }

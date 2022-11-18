@@ -4,6 +4,7 @@ import com.example.baedal.domain.Item;
 import com.example.baedal.domain.OrderHasItem;
 import com.example.baedal.domain.Orders;
 import com.example.baedal.dto.request.OrderRequestDto;
+import com.example.baedal.dto.response.OrderResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.ItemRepository;
 import com.example.baedal.repository.MemberRepository;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -46,12 +46,20 @@ public class OrderService {
         List<OrderHasItem> orderHasItems = itemList.stream().map(item -> OrderHasItem.builder()
                 .orders(order)
                 .item(item)
+                .amount(requestDto.getAmount())
                 .build()).collect(Collectors.toList());
 
         orderHasItemRepository.saveAll(orderHasItems);
 
-        return ResponseDto.success(requestDto.getItemId());
-
+        return ResponseDto.success(
+                OrderResponseDto.builder()
+                        .amount(requestDto.getAmount())
+                        .itemId(requestDto.getItemId())
+                        .storeId(requestDto.getStoreId())
+                        .createdAt(order.getCreatedAt())
+                        .modifiedAt(order.getModifiedAt())
+                        .build()
+        );
     }
 
     @Transactional(readOnly = true)
