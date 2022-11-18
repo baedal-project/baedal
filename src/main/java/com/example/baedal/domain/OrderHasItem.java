@@ -30,7 +30,6 @@ public class OrderHasItem {
     @JoinColumn(name="item_Id", nullable = true)
     private Item item;
 
-    public OrderHasItem(Item item){
-        this.item = item;
-    }
+    @Column(nullable = false)
+    private int amount;
 }
