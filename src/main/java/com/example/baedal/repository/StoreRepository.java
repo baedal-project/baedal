@@ -14,4 +14,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     @Modifying //cache clear
     @Query(value = "UPDATE Store s SET s.avgStar = :finalStar WHERE s.id = :id")
     void updateAvgStar(@Param("finalStar") double finalStar, @Param("id") Long id);
+
+    List<Store> findByNameContainsAndAddressContains(String name, String address);
 }
