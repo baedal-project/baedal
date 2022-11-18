@@ -43,18 +43,30 @@ public class OrderService {
                 .build();
         orderRepository.save(order);
 
-        List<OrderHasItem> orderHasItems = itemList.stream().map(item -> OrderHasItem.builder()
+//        List<OrderHasItem> orderHasItems = itemList.stream().map(item -> OrderHasItem.builder()
+//                .orders(order)
+//                .item(item)
+//                .amount(requestDto.getAmount())
+//                .build()).collect(Collectors.toList());
+
+        //orderHasItemRepository.saveAll(orderHasItems);
+        System.out.println(requestDto.getAmount());
+    for (int i=0; i<requestDto.getItemId().size(); i++){
+        Item item = itemList.get(i);
+        Integer amount = requestDto.getAmount().get(i);
+        OrderHasItem item1 = OrderHasItem.builder()
                 .orders(order)
                 .item(item)
-                .amount(requestDto.getAmount())
-                .build()).collect(Collectors.toList());
-
-        orderHasItemRepository.saveAll(orderHasItems);
+                .amount(amount)
+                .build();
+        orderHasItemRepository.save(item1);
+    }
 
         return ResponseDto.success(
                 OrderResponseDto.builder()
                         .amount(requestDto.getAmount())
                         .itemId(requestDto.getItemId())
+                        .memberId(requestDto.getMemberId())
                         .storeId(requestDto.getStoreId())
                         .createdAt(order.getCreatedAt())
                         .modifiedAt(order.getModifiedAt())
