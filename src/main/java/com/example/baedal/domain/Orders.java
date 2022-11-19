@@ -1,32 +1,30 @@
 package com.example.baedal.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Orders extends Timestamped{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long ordersId;
 
     //@JsonBackReference
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
     @JoinColumn(name="member_Id", nullable = false)
     private Member member;
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "orders",
             cascade = CascadeType.ALL,

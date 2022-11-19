@@ -13,7 +13,7 @@ public class StoreService {
     private final StoreRepository storeRepository;
 
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseDto<?> getAllStore() {
 
         return ResponseDto.success(storeRepository.findAll());

@@ -4,6 +4,7 @@ import com.example.baedal.domain.Item;
 import com.example.baedal.domain.OrderHasItem;
 import com.example.baedal.domain.Orders;
 import com.example.baedal.dto.request.OrderRequestDto;
+import com.example.baedal.dto.response.AllOrderResponseDto;
 import com.example.baedal.dto.response.OrderResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.ItemRepository;
@@ -33,13 +34,13 @@ public class OrderService {
         //itemId에 해당하는 내용들을 찾아서 리스트로
         List<Item> itemList = requestDto.getItemId()
                 .stream()
-                .map(item -> itemRepository.findById(item).orElse(null))
+                .map(item -> itemRepository.findByItemId(item).orElse(null))
                 .collect(Collectors.toList());
 
 
         //item을 OrderHasItems에 넣어두기
         Orders order = Orders.builder()
-                .member(memberRepository.findById(requestDto.getMemberId()).orElse(null))
+                .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))
                 .build();
         orderRepository.save(order);
 
@@ -74,14 +75,27 @@ public class OrderService {
         );
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseDto<?> getAllOrder() {
-        return ResponseDto.success(orderRepository.findAll());
+        //memberId, storeId, amount, item
+        //return ResponseDto.success(orderHasItemRepository.findAll().stream().map(v->v.getOrders()));
+        //return ResponseDto.success(orderHasItemRepository.findAll());
+
+        List<AllOrderResponseDto> collect = orderHasItemRepository.findAll().stream().map(v -> AllOrderResponseDto.builder()
+                .ordersId(v.getOrders().getOrdersId())
+                .itemId(v.getItem().getItemId())
+                .memberId(v.getOrders().getMember().getMemberId())
+                .storeId(v.getItem().getStore().getStoreId()).build()).collect(Collectors.toList());
+
+        return ResponseDto.success(collect);
+        //return ResponseDto.success(orderHasItemRepository.findAll());
+
+
     }
 
     @Transactional(readOnly = true)
     public ResponseDto<?> getOneOrder(Long id) {
-        return ResponseDto.success(orderRepository.findById(id));
+        return ResponseDto.success(orderRepository.findByOrdersId(id));
     }
 
 }

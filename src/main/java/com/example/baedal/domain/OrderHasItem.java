@@ -1,7 +1,5 @@
 package com.example.baedal.domain;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -16,17 +14,17 @@ import javax.persistence.*;
 public class OrderHasItem {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long orderHasItemId;
 
     //FK
     //주문메뉴 테이블
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
     @JoinColumn(name="orders_Id", nullable = true)
     private Orders orders;
 
     //FK
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
     @JoinColumn(name="item_Id", nullable = true)
     private Item item;

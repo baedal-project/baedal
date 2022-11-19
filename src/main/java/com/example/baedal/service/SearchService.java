@@ -21,7 +21,7 @@ public class SearchService {
 
     @Transactional
     public ResponseDto<?> search(SearchRequestDto requestDto) {
-        Member member = memberRepository.findById(requestDto.getMemberId()).orElse(null);
+        Member member = memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null);
         List<Store> stores = storeRepository.findByNameContainsAndAddressContains(requestDto.getKeyword(), member.getAddress());
 
         return ResponseDto.success(stores);
