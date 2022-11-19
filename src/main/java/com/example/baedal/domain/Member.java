@@ -1,5 +1,6 @@
 package com.example.baedal.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import java.util.List;
 public class Member extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long memberId;
 
     @Column(nullable = false)
     private String name;
@@ -23,7 +24,7 @@ public class Member extends Timestamped {
     @Column(nullable = false)
     private String address;
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "member",
             cascade = CascadeType.ALL,

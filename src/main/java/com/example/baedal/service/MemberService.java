@@ -26,7 +26,7 @@ public class MemberService {
 
         return ResponseDto.success(
                 MemberResponseDto.builder()
-                        .Id(member.getId())
+                        .Id(member.getMemberId())
                         .name(member.getName())
                         .address(member.getAddress())
                         .createdAt(member.getCreatedAt())
@@ -34,12 +34,12 @@ public class MemberService {
                         .build()
         );
     }
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseDto<?> getAllMember() {
         return ResponseDto.success(memberRepository.findAll());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseDto<?> getOneMember(Long id) {
         Member member =isPresentMember(id);
         if (null == member) {
@@ -47,7 +47,7 @@ public class MemberService {
         }
     return ResponseDto.success(
             MemberResponseDto.builder()
-                    .Id(member.getId())
+                    .Id(member.getMemberId())
                     .name(member.getName())
                     .address(member.getAddress())
                     .modifiedAt(member.getModifiedAt())
@@ -56,9 +56,9 @@ public class MemberService {
     );
 
     }
-    @Transactional(readOnly = true)
+    @Transactional
     public Member isPresentMember(Long id) {
-        Optional<Member> optionalMember = memberRepository.findById(id);
+        Optional<Member> optionalMember = memberRepository.findByMemberId(id);
         return optionalMember.orElse(null);
     }
 

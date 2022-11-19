@@ -1,11 +1,8 @@
 package com.example.baedal.domain;
 
-import com.example.baedal.shared.Category;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,10 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
 public class Store extends Timestamped{
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long storeId;
 
     @Column(nullable = false)
     private String name;
@@ -34,7 +33,8 @@ public class Store extends Timestamped{
     @Column(nullable = false)
     private double avgStar = 0.00;
 
-    @JsonManagedReference
+    //@JsonManagedReference
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "store",
             cascade = CascadeType.ALL,
@@ -42,7 +42,7 @@ public class Store extends Timestamped{
     )
     private List<Item> items = new ArrayList<>();
 
-    @JsonManagedReference
+    //@JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "store",
             cascade = CascadeType.ALL,

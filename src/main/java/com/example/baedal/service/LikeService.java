@@ -40,11 +40,11 @@ public class LikeService {
         //System.out.println("평점 잘 데려오니" + star);
         //System.out.println("평점 잘 데려오니" + dstar);
 
-        Store store = storeRepository.findById(requestDto.getStoreId()).orElse(null);
+        Store store = storeRepository.findByStoreId(requestDto.getStoreId()).orElse(null);
         //System.out.println("가게 잘 찾아오니" + store.getName());
 
         Likes likes = Likes.builder()
-                .member(memberRepository.findById(requestDto.getMemberId()).orElse(null))
+                .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))
                 .store(store)
                 .star(star)
                 .build();
@@ -53,7 +53,7 @@ public class LikeService {
 
         //store에 평균점수 집어넣기
         //System.out.println(storeRepository.findById(requestDto.getStoreId()));
-        int count = likeRepository.countByStoreId(requestDto.getStoreId());
+        int count = likeRepository.countByStore_StoreId(requestDto.getStoreId());
         double dcount = count;
         //System.out.println("특정 가게에 대한 평점 잘 나오니" + count);
         initStar = store.getAvgStar() * (count-1);
@@ -68,7 +68,5 @@ public class LikeService {
         return ResponseDto.success(star);
 
     }
-
-
 
 }
