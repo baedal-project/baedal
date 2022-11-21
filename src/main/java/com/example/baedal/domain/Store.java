@@ -43,6 +43,7 @@ public class Store extends Timestamped{
     private List<Item> items = new ArrayList<>();
 
     //@JsonManagedReference
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "store",
             cascade = CascadeType.ALL,
