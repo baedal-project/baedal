@@ -35,6 +35,16 @@ services:
     networks:
       - baedal-network
 
+  Baedal:
+    image: ghcr.io/baedal-project/baedal
+    container_name: baedal
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - baedal-network
+
+
 networks:
   baedal-network:
     driver: bridge
