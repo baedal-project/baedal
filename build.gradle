@@ -71,3 +71,7 @@ configurations {
     querydsl.extendsFrom compileClasspath
 }
 //queryDSL 추가 끝
+
+jar {
+    enabled = false
+}
