@@ -37,6 +37,9 @@ dependencies {
     implementation "com.querydsl:querydsl-core:${queryDslVersion}" // 한개 더 추가!
     //queryDSL 설정 끝
 
+    //log
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'

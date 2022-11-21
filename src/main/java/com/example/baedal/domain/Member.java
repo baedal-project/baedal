@@ -8,9 +8,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Builder
 @Entity
 public class Member extends Timestamped {
@@ -21,8 +21,17 @@ public class Member extends Timestamped {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String address;
+//    @Column(nullable = false)
+//    private String address;
+    @Embedded
+    @AttributeOverride(name = "address", column = @Column(name = "home_address"))
+    @AttributeOverride(name = "detail", column = @Column(name = "home_address_detail"))
+    private Address homeAddress;
+
+    @Embedded
+    @AttributeOverride(name = "address", column = @Column(name = "company_address"))
+    @AttributeOverride(name = "detail", column = @Column(name = "company_address_detail"))
+    private Address companyAddress;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,

@@ -1,5 +1,6 @@
 package com.example.baedal.service;
 
+import com.example.baedal.domain.Address;
 import com.example.baedal.domain.Member;
 import com.example.baedal.dto.request.MemberRequestDto;
 import com.example.baedal.dto.response.MemberResponseDto;
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
 
@@ -20,7 +21,8 @@ public class MemberService {
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
         Member member = Member.builder()
                 .name(requestDto.getName())
-                .address(requestDto.getAddress())
+                .homeAddress(new Address(requestDto.getHomeAddress(),requestDto.getHomeDetail()))
+                .companyAddress(new Address(requestDto.getCompanyAddress(),requestDto.getCompanyDetail()))
                 .build();
         memberRepository.save(member);
 
@@ -28,7 +30,8 @@ public class MemberService {
                 MemberResponseDto.builder()
                         .Id(member.getMemberId())
                         .name(member.getName())
-                        .address(member.getAddress())
+                        .homeAddress(member.getHomeAddress())
+                        .companyAddress(member.getCompanyAddress())
                         .createdAt(member.getCreatedAt())
                         .modifiedAt(member.getModifiedAt())
                         .build()
@@ -49,7 +52,8 @@ public class MemberService {
             MemberResponseDto.builder()
                     .Id(member.getMemberId())
                     .name(member.getName())
-                    .address(member.getAddress())
+                    .homeAddress(member.getHomeAddress())
+                    .companyAddress(member.getCompanyAddress())
                     .modifiedAt(member.getModifiedAt())
                     .createdAt(member.getCreatedAt())
                     .build()
