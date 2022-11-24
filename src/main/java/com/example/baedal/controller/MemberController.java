@@ -1,6 +1,5 @@
 package com.example.baedal.controller;
 
-import com.example.baedal.config.LogExecutionTime;
 import com.example.baedal.dto.request.MemberRequestDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.service.MemberService;
@@ -13,7 +12,6 @@ public class MemberController {
     private final MemberService memberService;
 
     //멤버등록
-    //@LogExecutionTime
     @PostMapping (value = "/api/members/signup")
     public ResponseDto<?> signup(@RequestBody MemberRequestDto requestDto) {
         return memberService.createMember(requestDto);
@@ -22,10 +20,8 @@ public class MemberController {
     public ResponseDto<?> getAllMember() {
         return memberService.getAllMember();
     }
-
     @GetMapping (value = "/api/members/{id}")
     public ResponseDto<?> getMember(@PathVariable Long id) {
-
         return memberService.getOneMember(id);
     }
 }

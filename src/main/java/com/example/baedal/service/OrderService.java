@@ -4,13 +4,12 @@ import com.example.baedal.domain.Item;
 import com.example.baedal.domain.OrderHasItem;
 import com.example.baedal.domain.Orders;
 import com.example.baedal.dto.request.OrderRequestDto;
-import com.example.baedal.dto.response.AllOrderResponseDto;
 import com.example.baedal.dto.response.OrderResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.ItemRepository;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.OrderHasItemRepository;
-import com.example.baedal.repository.OrderRepository;
+import com.example.baedal.repository.OrderRepository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,24 +69,33 @@ public class OrderService {
                         .memberId(requestDto.getMemberId())
                         .storeId(requestDto.getStoreId())
                         .createdAt(order.getCreatedAt())
-                        .modifiedAt(order.getModifiedAt())
+                        //.modifiedAt(order.getModifiedAt())
                         .build()
         );
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseDto<?> getAllOrder() {
         //memberId, storeId, amount, item
         //return ResponseDto.success(orderHasItemRepository.findAll().stream().map(v->v.getOrders()));
         //return ResponseDto.success(orderHasItemRepository.findAll());
 
-        List<AllOrderResponseDto> collect = orderHasItemRepository.findAll().stream().map(v -> AllOrderResponseDto.builder()
-                .ordersId(v.getOrders().getOrdersId())
-                .itemId(v.getItem().getItemId())
-                .memberId(v.getOrders().getMember().getMemberId())
-                .storeId(v.getItem().getStore().getStoreId()).build()).collect(Collectors.toList());
+        //before refactoring
+//        List<AllOrderResponseDto> collect = orderHasItemRepository.findAll().stream().map(v -> AllOrderResponseDto.builder()
+//                .ordersId(v.getOrders().getOrdersId())
+//                .itemId(v.getItem().getItemId())
+//                .memberId(v.getOrders().getMember().getMemberId())
+//                .storeId(v.getItem().getStore().getStoreId()).build()).collect(Collectors.toList());
 
-        return ResponseDto.success(collect);
+//        return ResponseDto.success(collect);
+//        return ResponseDto.success(orderHasItemRepository.findAll());
+        //===================================================================
+        //after refactoring
+        //memberId(memberName?), storeId(storeName?), itemId(name?), itemAmount, itemPrice, createdAt
+        return ResponseDto.success(orderRepository.getAllOrder());
+
+
+        //return ResponseDto.success(collect);
         //return ResponseDto.success(orderHasItemRepository.findAll());
 
 
@@ -95,7 +103,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public ResponseDto<?> getOneOrder(Long id) {
-        return ResponseDto.success(orderRepository.findByOrdersId(id));
+        return ResponseDto.success(orderRepository.getOneOrder(id));
     }
 
 }

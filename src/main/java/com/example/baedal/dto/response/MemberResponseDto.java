@@ -20,8 +20,8 @@ public class MemberResponseDto {
     private LocalDateTime modifiedAt;
 
     @QueryProjection
-    public MemberResponseDto(Long id,String name,String address) {
-        this.Id = id;
+    public MemberResponseDto(Long Id, String name, String address){
+        this.Id = Id;
         this.name = name;
         this.address = address;
     }

@@ -35,21 +35,18 @@ public class MemberService {
         );
     }
 
-    //114ms(4 members)
     @Transactional(readOnly = true)
+
     public ResponseDto<?> getAllMember() {
+        //return ResponseDto.success(memberRepository.findAll());
+        //refactoring
         return ResponseDto.success(memberRepository.findIdNameAddress());
     }
 
-    //149ms(4 members)
-//    @Transactional(readOnly = true)
-//    public ResponseDto<?> getAllMember() {
-//        return ResponseDto.success(memberRepository.findAll());
-//    }
-
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseDto<?> getOneMember(Long id) {
-        MemberResponseDto member =isPresentMember(id);
+        //Member member =isPresentMember(id);
+        MemberResponseDto member = isPresentMember(id);
         if (null == member) {
             return ResponseDto.fail("NOT_FOUND", "존재하지 않는 유저 id 입니다.");
         }
@@ -62,25 +59,21 @@ public class MemberService {
 //                    .address(member.getAddress())
 //                    .modifiedAt(member.getModifiedAt())
 //                    .createdAt(member.getCreatedAt())
-//                    .build());
-
+//                    .build()
+//    );
         //after refactoring(1개 조회라 그런지 시간 차이 많이 x)
         return ResponseDto.success(memberRepository.findByMemberIdCustom(id));
-
     }
 
-    //before refactoring
-//    @Transactional
+    //    @Transactional
 //    public Member isPresentMember(Long id) {
-//        Optional<Member> optionalMember = memberRepository.findByMemberId(id);
+//        //Optional<Member> optionalMember = memberRepository.findByMemberId(id);
 //        return optionalMember.orElse(null);
 //    }
-
-    //after refactoring
     @Transactional
     public MemberResponseDto isPresentMember(Long id) {
         Optional<MemberResponseDto> optionalMember = memberRepository.findByMemberIdCustom(id);
         return optionalMember.orElse(null);
-    }
 
+    }
 }

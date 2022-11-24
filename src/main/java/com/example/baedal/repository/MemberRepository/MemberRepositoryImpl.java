@@ -1,8 +1,6 @@
 package com.example.baedal.repository.MemberRepository;
 
 
-import com.example.baedal.domain.Member;
-import com.example.baedal.dto.request.QMemberRequestDto;
 import com.example.baedal.dto.response.MemberResponseDto;
 import com.example.baedal.dto.response.QMemberResponseDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;

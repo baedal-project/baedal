@@ -3,6 +3,7 @@ package com.example.baedal;
 import com.example.baedal.domain.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@DisplayName("query initializing test")
 class BaedalApplicationTests {
 
     @PersistenceContext
@@ -31,6 +33,7 @@ class BaedalApplicationTests {
     }
 
     @Test
+    @DisplayName("querydsl 잘 되나 확인")
     public void startQuerydsl() throws Exception {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 

@@ -5,6 +5,7 @@ import com.example.baedal.dto.response.MemberResponseDto;
 import com.example.baedal.dto.response.QMemberResponseDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@DisplayName("member 관련 test")
 class MemberRepositoryImplTest {
 
     @PersistenceContext
@@ -32,6 +34,7 @@ class MemberRepositoryImplTest {
     }
 
     @Test
+    @DisplayName("member query projection 잘 되나 확인")
     public void findDtoByQueryProjection(){
         List<MemberResponseDto> memberDtos = queryFactory
                 .select(new QMemberResponseDto(member.memberId, member.name, member.address))

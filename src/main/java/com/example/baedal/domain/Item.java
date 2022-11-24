@@ -22,8 +22,8 @@ public class Item extends Timestamped{
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private int amount;
+//    @Column(nullable = false)
+//    private int amount;
 
     @Column(nullable = false)
     private int price;
