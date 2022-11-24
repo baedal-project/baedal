@@ -43,6 +43,9 @@ dependencies {
 
     //p6
     //implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
+
+    //AOP
+    implementation 'org.springframework.boot:spring-boot-starter-aop:2.7.5'
 }
 
 tasks.named('test') {

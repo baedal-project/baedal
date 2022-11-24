@@ -51,7 +51,7 @@ public class OrderService {
 //                .build()).collect(Collectors.toList());
 
         //orderHasItemRepository.saveAll(orderHasItems);
-        System.out.println(requestDto.getAmount());
+        //System.out.println(requestDto.getAmount());
     for (int i=0; i<requestDto.getItemId().size(); i++){
         Item item = itemList.get(i);
         Integer amount = requestDto.getAmount().get(i);
