@@ -39,4 +39,9 @@ public class Member extends Timestamped {
             orphanRemoval = true
     )
     private List<Likes> likes = new ArrayList<>();
+
+    public Member(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
 }

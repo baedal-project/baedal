@@ -1,5 +1,6 @@
 package com.example.baedal.dto.response;
 
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,4 +18,11 @@ public class MemberResponseDto {
     private String address;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+
+    @QueryProjection
+    public MemberResponseDto(Long id,String name,String address) {
+        this.Id = id;
+        this.name = name;
+        this.address = address;
+    }
 }

@@ -4,7 +4,7 @@ import com.example.baedal.domain.Member;
 import com.example.baedal.dto.request.MemberRequestDto;
 import com.example.baedal.dto.response.MemberResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
-import com.example.baedal.repository.MemberRepository;
+import com.example.baedal.repository.MemberRepository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,31 +34,52 @@ public class MemberService {
                         .build()
         );
     }
-    @Transactional
+
+    //114ms(4 members)
+    @Transactional(readOnly = true)
     public ResponseDto<?> getAllMember() {
-        return ResponseDto.success(memberRepository.findAll());
+        return ResponseDto.success(memberRepository.findIdNameAddress());
     }
+
+    //149ms(4 members)
+//    @Transactional(readOnly = true)
+//    public ResponseDto<?> getAllMember() {
+//        return ResponseDto.success(memberRepository.findAll());
+//    }
 
     @Transactional
     public ResponseDto<?> getOneMember(Long id) {
-        Member member =isPresentMember(id);
+        MemberResponseDto member =isPresentMember(id);
         if (null == member) {
             return ResponseDto.fail("NOT_FOUND", "존재하지 않는 유저 id 입니다.");
         }
-    return ResponseDto.success(
-            MemberResponseDto.builder()
-                    .Id(member.getMemberId())
-                    .name(member.getName())
-                    .address(member.getAddress())
-                    .modifiedAt(member.getModifiedAt())
-                    .createdAt(member.getCreatedAt())
-                    .build()
-    );
+
+        //before refactoring
+//    return ResponseDto.success(
+//            MemberResponseDto.builder()
+//                    .Id(member.getMemberId())
+//                    .name(member.getName())
+//                    .address(member.getAddress())
+//                    .modifiedAt(member.getModifiedAt())
+//                    .createdAt(member.getCreatedAt())
+//                    .build());
+
+        //after refactoring(1개 조회라 그런지 시간 차이 많이 x)
+        return ResponseDto.success(memberRepository.findByMemberIdCustom(id));
 
     }
+
+    //before refactoring
+//    @Transactional
+//    public Member isPresentMember(Long id) {
+//        Optional<Member> optionalMember = memberRepository.findByMemberId(id);
+//        return optionalMember.orElse(null);
+//    }
+
+    //after refactoring
     @Transactional
-    public Member isPresentMember(Long id) {
-        Optional<Member> optionalMember = memberRepository.findByMemberId(id);
+    public MemberResponseDto isPresentMember(Long id) {
+        Optional<MemberResponseDto> optionalMember = memberRepository.findByMemberIdCustom(id);
         return optionalMember.orElse(null);
     }
 

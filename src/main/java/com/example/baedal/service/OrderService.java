@@ -8,7 +8,7 @@ import com.example.baedal.dto.response.AllOrderResponseDto;
 import com.example.baedal.dto.response.OrderResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.ItemRepository;
-import com.example.baedal.repository.MemberRepository;
+import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.OrderHasItemRepository;
 import com.example.baedal.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;

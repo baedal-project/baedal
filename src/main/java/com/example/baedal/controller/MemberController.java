@@ -20,8 +20,10 @@ public class MemberController {
     public ResponseDto<?> getAllMember() {
         return memberService.getAllMember();
     }
+
     @GetMapping (value = "/api/members/{id}")
     public ResponseDto<?> getMember(@PathVariable Long id) {
+
         return memberService.getOneMember(id);
     }
 }
