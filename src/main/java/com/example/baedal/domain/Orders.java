@@ -21,7 +21,7 @@ public class Orders extends Timestamped{
 
     //@JsonBackReference
     //@JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_Id", nullable = false)
     private Member member;
 

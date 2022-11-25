@@ -17,12 +17,12 @@ public class Likes {
     private Long likeId;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="store_Id", nullable = false)
     private Store store;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_Id", nullable = false)
     private Member member;
 

@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -35,7 +37,7 @@ public class OrderService {
         List<Item> itemList = requestDto.getItemId()
                 .stream()
                 .map(item -> itemRepository.findByItemId(item).orElse(null))
-                .collect(Collectors.toList());
+                .collect(toList());
 
 
         //item을 OrderHasItems에 넣어두기
@@ -102,7 +104,9 @@ public class OrderService {
         //List<Orders> orders = orderRepository.getAllOrder();
 
         System.out.println(orders.get(0).getOrdersId());
-        List<OrderNestedResponseDto> collect = orders.stream().map(OrderNestedResponseDto::new).collect(Collectors.toList());
+        List<OrderNestedResponseDto> collect = orders.stream()
+                .map(OrderNestedResponseDto::new)
+                .collect(toList());
 
         return ResponseDto.success(collect);
     }
