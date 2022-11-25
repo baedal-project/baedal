@@ -35,13 +35,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    // 모니터링
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("io.micrometer:micrometer-registry-prometheus")
-    implementation 'io.micrometer:micrometer-core'
-
-    // 캐시
-    implementation 'org.springframework.boot:spring-boot-starter-cache:2.7.5'
 
     // QueryDSL
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
@@ -53,6 +46,15 @@ dependencies {
 
     //AOP
     implementation 'org.springframework.boot:spring-boot-starter-aop:2.7.5'
+
+    // 모니터링
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation 'io.micrometer:micrometer-core'
+
+    // 캐시
+    implementation 'org.springframework.boot:spring-boot-starter-cache:2.7.5'
+
 }
 
 tasks.named('test') {
