@@ -16,8 +16,9 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    @Transactional
+    @Transactional  //회원가입
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
+
         Member member = Member.builder()
                 .name(requestDto.getName())
                 .address(requestDto.getAddress())
@@ -56,10 +57,13 @@ public class MemberService {
     );
 
     }
-    @Transactional
-    public Member isPresentMember(Long id) {
+
+    //@Transactional
+    private Member isPresentMember(Long id) {
         Optional<Member> optionalMember = memberRepository.findByMemberId(id);
         return optionalMember.orElse(null);
     }
+
+
 
 }

@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Builder
 @Entity
+@Setter
 public class Member extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
