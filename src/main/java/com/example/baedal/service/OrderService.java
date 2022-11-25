@@ -103,8 +103,6 @@ public class OrderService {
 
         //comparison2)
         List<Orders> orders = orderRepository.getAllOrder();
-
-        System.out.println(orders.get(0).getOrdersId());
         List<OrderNestedResponseDto> collect = orders.stream()
                 .map(OrderNestedResponseDto::new)
                 .collect(toList());
@@ -115,7 +113,15 @@ public class OrderService {
     @Transactional(readOnly = true)
     public ResponseDto<?> getOneOrder(Long id) {
 
-        return ResponseDto.success(orderRepository.getOneOrder(id));
+        //comparison1) JPA 사용
+        //return ResponseDto.success(orderRepository.getOneOrder(id));
+
+        //comparison2)
+        Orders orders = orderRepository.getOneOrder(id);
+        OrderNestedResponseDto collectOne =
+                new OrderNestedResponseDto(orders);
+
+        return ResponseDto.success(collectOne);
     }
 
 }

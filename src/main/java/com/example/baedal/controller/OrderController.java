@@ -21,7 +21,7 @@ public class OrderController {
     }
 
     //주문 전체조회
-    @LogExecutionTime
+    //@LogExecutionTime
     @GetMapping(value = "/api/orders")
     public ResponseDto<?> getAllOrder() {
         return orderService.getAllOrder();

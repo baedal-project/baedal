@@ -1,16 +1,13 @@
 package com.example.baedal.repository.OrderRepository;
 
 import com.example.baedal.domain.*;
-import com.example.baedal.dto.response.AllOrderResponseDto;
-import com.example.baedal.dto.response.QAllOrderResponseDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.baedal.domain.QItem.*;
-import static com.example.baedal.domain.QMember.*;
+import static com.example.baedal.domain.QMember.member;
 import static com.example.baedal.domain.QOrderHasItem.*;
 import static com.example.baedal.domain.QOrders.*;
 import static com.example.baedal.domain.QStore.*;
@@ -33,7 +30,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
 //        return orderHasItems;
 
 //    after refactoring
-//    @Override
+   @Override
     public List<Orders> getAllOrder(){
         //별칭으로 사용할 QType
         QOrderHasItem orderHasItem1 = orderHasItem;
@@ -54,20 +51,41 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
 
     }
 
+//    @Override
+//    public List<AllOrderResponseDto> getOneOrder(Long id) {
+//
+//        //before refactoring
+//        return queryFactory
+//                .select(new QAllOrderResponseDto(orderHasItem.item.store.storeId,orderHasItem.item.store.name,
+//                        orderHasItem.item.itemId, orderHasItem.item.name,orderHasItem.amount,
+//                        orderHasItem.item.price, orderHasItem.orders.member.memberId,orderHasItem.orders.member.name,
+//                        orderHasItem.orders.createdAt))
+//                //.select(//연관관계 -> DTO에서 변형 List로 넣자)
+//                .from(orderHasItem)
+//                .leftJoin(orderHasItem.orders)
+//                .leftJoin(orderHasItem.item)
+//                .where(orderHasItem.orders.ordersId.eq(id))
+//                .fetch();
+//
+//    }
     @Override
-    public List<AllOrderResponseDto> getOneOrder(Long id) {
+    public Orders getOneOrder(Long id){
+        //별칭으로 사용할 QType
+        QOrderHasItem orderHasItem2 = orderHasItem;
+        QItem item2 = item;
 
-        return queryFactory
-                .select(new QAllOrderResponseDto(orderHasItem.item.store.storeId,orderHasItem.item.store.name,
-                        orderHasItem.item.itemId, orderHasItem.item.name,orderHasItem.amount,
-                        orderHasItem.item.price, orderHasItem.orders.member.memberId,orderHasItem.orders.member.name,
-                        orderHasItem.orders.createdAt))
-                //.select(//연관관계 -> DTO에서 변형 List로 넣자)
-                .from(orderHasItem)
-                .leftJoin(orderHasItem.orders)
-                .leftJoin(orderHasItem.item)
-                .where(orderHasItem.orders.ordersId.eq(id))
-                .fetch();
+        Orders order = queryFactory
+                .select(orders)
+                .from(orders)
+                .join(orders.member).fetchJoin()
+                .join(orders.orderHasItems, orderHasItem2).fetchJoin()
+                .join(orderHasItem2.item, item2).fetchJoin()
+                .join(item2.store, store).fetchJoin()
+                .distinct()
+                .where(orders.ordersId.eq(id))
+                .fetchOne();
+
+        return order;
 
     }
 
