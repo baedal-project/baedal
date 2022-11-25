@@ -32,7 +32,7 @@ public class BaedalApplication {
 //
 //        };
 //    }
-    
+//
 //    @Bean
 //    public CommandLineRunner demo(ItemRepository itemRepository) {
 //        return (args) -> {

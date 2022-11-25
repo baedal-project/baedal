@@ -1,7 +1,9 @@
 package com.example.baedal.repository.OrderRepository;
 
+import com.example.baedal.domain.OrderHasItem;
 import com.example.baedal.domain.Orders;
 import com.example.baedal.dto.response.AllOrderResponseDto;
+import com.example.baedal.dto.response.OrderResponseDto;
 import com.example.baedal.dto.response.QAllOrderResponseDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.assertj.core.api.Assertions;
@@ -43,7 +45,8 @@ class OrderRepositoryImplTest {
     @DisplayName("전체 주문개수 맞나 확인")
     public void getAllOrder(){
         //test cases들은 구현체와 최대한 결합도가 낮아야 good
-        List<AllOrderResponseDto> allOrders = orderRepository.getAllOrder();
+        //List<AllOrderResponseDto> allOrders = orderRepository.getAllOrder();
+        List<OrderHasItem> allOrders = orderRepository.getAllOrder();
         assertThat(allOrders.size()).isEqualTo(12);
     }
 

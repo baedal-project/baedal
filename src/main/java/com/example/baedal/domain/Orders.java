@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,7 +31,7 @@ public class Orders extends Timestamped{
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<OrderHasItem> orderHasItems;
+    private List<OrderHasItem> orderHasItems = new ArrayList<>();
 
 
 }

@@ -4,6 +4,7 @@ import com.example.baedal.domain.Item;
 import com.example.baedal.domain.OrderHasItem;
 import com.example.baedal.domain.Orders;
 import com.example.baedal.dto.request.OrderRequestDto;
+import com.example.baedal.dto.response.OrderNestedResponseDto;
 import com.example.baedal.dto.response.OrderResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.ItemRepository;
@@ -70,8 +71,8 @@ public class OrderService {
                         .storeId(requestDto.getStoreId())
                         .createdAt(order.getCreatedAt())
                         //.modifiedAt(order.getModifiedAt())
-                        .build()
-        );
+                        .build());
+
     }
 
     @Transactional(readOnly = true)
@@ -89,20 +90,26 @@ public class OrderService {
 
 //        return ResponseDto.success(collect);
 //        return ResponseDto.success(orderHasItemRepository.findAll());
+
         //===================================================================
         //after refactoring
         //memberId(memberName?), storeId(storeName?), itemId(name?), itemAmount, itemPrice, createdAt
-        return ResponseDto.success(orderRepository.getAllOrder());
 
+        //comparison1) Repository findAll
+        List<Orders> orders = orderRepository.findAll();
 
-        //return ResponseDto.success(collect);
-        //return ResponseDto.success(orderHasItemRepository.findAll());
+        //comparison2)
+        //List<Orders> orders = orderRepository.getAllOrder();
 
+        System.out.println(orders.get(0).getOrdersId());
+        List<OrderNestedResponseDto> collect = orders.stream().map(OrderNestedResponseDto::new).collect(Collectors.toList());
 
+        return ResponseDto.success(collect);
     }
 
     @Transactional(readOnly = true)
     public ResponseDto<?> getOneOrder(Long id) {
+
         return ResponseDto.success(orderRepository.getOneOrder(id));
     }
 

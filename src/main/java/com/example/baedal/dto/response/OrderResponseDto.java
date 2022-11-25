@@ -1,7 +1,5 @@
 package com.example.baedal.dto.response;
 
-
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 import java.time.LocalDateTime;
