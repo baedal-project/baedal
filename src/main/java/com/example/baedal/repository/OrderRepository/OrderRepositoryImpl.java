@@ -18,6 +18,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
     @Override
     public List<AllOrderResponseDto> getAllOrder(){
         return queryFactory
+                //projection은 fetch join 사용 불가 -> join으로 변경
                 .select(new QAllOrderResponseDto(orderHasItem.item.store.storeId,orderHasItem.item.store.name,
                         orderHasItem.item.itemId, orderHasItem.item.name,orderHasItem.amount,
                         orderHasItem.item.price, orderHasItem.orders.member.memberId,orderHasItem.orders.member.name,

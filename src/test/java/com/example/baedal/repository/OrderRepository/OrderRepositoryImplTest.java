@@ -42,18 +42,9 @@ class OrderRepositoryImplTest {
     @Test
     @DisplayName("전체 주문개수 맞나 확인")
     public void getAllOrder(){
-        List<AllOrderResponseDto> responseDtos = queryFactory
-                .select(new QAllOrderResponseDto(orderHasItem.item.store.storeId, orderHasItem.item.store.name,
-                        orderHasItem.item.itemId, orderHasItem.item.name, orderHasItem.amount,
-                        orderHasItem.item.price, orderHasItem.orders.member.memberId, orderHasItem.orders.member.name,
-                        orderHasItem.orders.createdAt))
-                .from(orderHasItem)
-                .leftJoin(orderHasItem.orders)
-                .leftJoin(orderHasItem.item)
-                .orderBy(orderHasItem.orderHasItemId.asc())
-                .fetch();
-
-        assertThat(responseDtos.size()).isEqualTo(12);
+        //test cases들은 구현체와 최대한 결합도가 낮아야 good
+        List<AllOrderResponseDto> allOrders = orderRepository.getAllOrder();
+        assertThat(allOrders.size()).isEqualTo(12);
     }
 
     @Test
