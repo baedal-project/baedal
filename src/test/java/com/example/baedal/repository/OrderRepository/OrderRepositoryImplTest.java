@@ -46,7 +46,8 @@ class OrderRepositoryImplTest {
     public void getAllOrder(){
         //test cases들은 구현체와 최대한 결합도가 낮아야 good
         //List<AllOrderResponseDto> allOrders = orderRepository.getAllOrder();
-        List<OrderHasItem> allOrders = orderRepository.getAllOrder();
+        //List<OrderHasItem> allOrders = orderRepository.getAllOrder();
+        List<Orders> allOrders = orderRepository.getAllOrder();
         assertThat(allOrders.size()).isEqualTo(12);
     }
 

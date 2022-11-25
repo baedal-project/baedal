@@ -43,6 +43,7 @@ public class OrderService {
         //item을 OrderHasItems에 넣어두기
         Orders order = Orders.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))
+                .storeName(requestDto.getStoreName())
                 .build();
         orderRepository.save(order);
 
@@ -98,10 +99,10 @@ public class OrderService {
         //memberId(memberName?), storeId(storeName?), itemId(name?), itemAmount, itemPrice, createdAt
 
         //comparison1) Repository findAll
-        List<Orders> orders = orderRepository.findAll();
+        //List<Orders> orders = orderRepository.findAll();
 
         //comparison2)
-        //List<Orders> orders = orderRepository.getAllOrder();
+        List<Orders> orders = orderRepository.getAllOrder();
 
         System.out.println(orders.get(0).getOrdersId());
         List<OrderNestedResponseDto> collect = orders.stream()

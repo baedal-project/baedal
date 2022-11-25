@@ -19,6 +19,9 @@ public class Orders extends Timestamped{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ordersId;
 
+    @Column(nullable = false)
+    private String storeName;
+
     //@JsonBackReference
     //@JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

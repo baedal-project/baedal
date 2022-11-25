@@ -28,8 +28,6 @@ public class BaedalApplication {
 //            storeRepository.save(Store.builder().name("족황상제").address("jecheon-si").category("JOCKBAL").build());
 //
 //
-//
-//
 //        };
 //    }
 //

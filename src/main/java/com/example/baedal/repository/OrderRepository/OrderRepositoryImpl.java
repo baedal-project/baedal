@@ -20,23 +20,38 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 
-//    @Override
 
 //    before refactoring
-    public List<OrderHasItem> getAllOrder(){
-        List<OrderHasItem> orderHasItems = queryFactory
-                .selectFrom(orderHasItem)
-                .join(orderHasItem.item).on(orderHasItem.item.itemId.eq(item.itemId))
-                .join(orderHasItem.orders).on(orderHasItem.orders.ordersId.eq(orders.ordersId))
-                .join(orders.member).on(orderHasItem.orders.member.memberId.eq(member.memberId))
-                .join(item.store).on(orderHasItem.item.store.storeId.eq(store.storeId))
-                .fetch();
-        return orderHasItems;
+//    public List<OrderHasItem> getAllOrder(){
+//        List<OrderHasItem> orderHasItems = queryFactory
+//                .selectFrom(orderHasItem)
+//                .join(orderHasItem.item).on(orderHasItem.item.itemId.eq(item.itemId))
+//                .join(orderHasItem.orders).on(orderHasItem.orders.ordersId.eq(orders.ordersId))
+//                .join(orders.member).on(orderHasItem.orders.member.memberId.eq(member.memberId))
+//                .join(item.store).on(orderHasItem.item.store.storeId.eq(store.storeId))
+//                .fetch();
+//        return orderHasItems;
 
-    //after refactoring
+//    after refactoring
 //    @Override
-//    public List<Orders> getAllOrder(){
-//        List<Orders>
+    public List<Orders> getAllOrder(){
+        //별칭으로 사용할 QType
+        QOrderHasItem orderHasItem1 = orderHasItem;
+        QItem item1 = item;
+
+        List<Orders> ordersList = queryFactory
+                .select(orders)
+                .from(orders)
+                .join(orders.member).fetchJoin()
+                .join(orders.orderHasItems, orderHasItem1).fetchJoin()
+                .join(orderHasItem1.item, item1).fetchJoin()
+                .join(item1.store, store).fetchJoin()
+                .orderBy(orders.ordersId.asc())
+                .distinct()
+                .fetch();
+
+        return ordersList;
+
     }
 
     @Override
