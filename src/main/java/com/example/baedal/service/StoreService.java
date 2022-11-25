@@ -1,11 +1,10 @@
 package com.example.baedal.service;
 
 import com.example.baedal.dto.response.ResponseDto;
-import com.example.baedal.repository.StoreRepository;
+import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +21,6 @@ public class StoreService {
     @Cacheable(value = "test")
     public ResponseDto<?> getAllStore(Pageable pageable) {
 
-        return ResponseDto.success(storeRepository.findAll(pageable));
+        return ResponseDto.success(storeRepository.getAllStore(pageable));
     }
 }

@@ -5,7 +5,7 @@ import com.example.baedal.domain.Store;
 import com.example.baedal.dto.request.SearchRequestDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.MemberRepository;
-import com.example.baedal.repository.StoreRepository;
+import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

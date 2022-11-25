@@ -1,14 +1,7 @@
 package com.example.baedal;
 
-import com.example.baedal.domain.Item;
-import com.example.baedal.domain.Store;
-import com.example.baedal.repository.ItemRepository;
-import com.example.baedal.repository.StoreRepository;
-import com.example.baedal.shared.Category;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 
