@@ -22,8 +22,8 @@ public class Item extends Timestamped{
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private int amount;
+//    @Column(nullable = false)
+//    private int amount;
 
     @Column(nullable = false)
     private int price;
@@ -40,7 +40,7 @@ public class Item extends Timestamped{
     private List<OrderHasItem> orderHasItems = new ArrayList<>();
 
     //@JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="store_Id", nullable = true)
     private Store store;
 

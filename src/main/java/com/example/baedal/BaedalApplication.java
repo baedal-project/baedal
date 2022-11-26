@@ -28,11 +28,9 @@ public class BaedalApplication {
 //            storeRepository.save(Store.builder().name("족황상제").address("jecheon-si").category("JOCKBAL").build());
 //
 //
-//
-//
 //        };
 //    }
-    
+//
 //    @Bean
 //    public CommandLineRunner demo(ItemRepository itemRepository) {
 //        return (args) -> {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,9 +19,12 @@ public class Orders extends Timestamped{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ordersId;
 
+    @Column(nullable = false)
+    private String storeName;
+
     //@JsonBackReference
     //@JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_Id", nullable = false)
     private Member member;
 
@@ -30,7 +34,7 @@ public class Orders extends Timestamped{
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<OrderHasItem> orderHasItems;
+    private List<OrderHasItem> orderHasItems = new ArrayList<>();
 
 
 }

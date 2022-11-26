@@ -1,6 +1,5 @@
 package com.example.baedal.dto.response;
 
-
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,6 +18,5 @@ public class OrderResponseDto {
     private List<Integer> amount;
     private Long memberId;
     private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
 
 }
