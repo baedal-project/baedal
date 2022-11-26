@@ -35,11 +35,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    implementation 'org.springframework.boot:spring-boot-gradle-plugin:2.7.5'
-    implementation 'org.springframework.boot:spring-boot-loader-tools:2.7.5'
-    implementation 'org.apache.commons:commons-compress:1.21'
-    implementation 'org.springframework:spring-core:5.3.23'
-
     // QueryDSL
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
