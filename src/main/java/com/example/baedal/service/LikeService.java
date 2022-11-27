@@ -7,7 +7,7 @@ import com.example.baedal.dto.request.LikeRequestDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.LikeRepository;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
-import com.example.baedal.repository.StoreRepository;
+import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

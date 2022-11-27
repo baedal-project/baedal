@@ -1,11 +1,10 @@
 package com.example.baedal.service;
 
 import com.example.baedal.dto.response.ResponseDto;
-import com.example.baedal.repository.StoreRepository;
+import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 

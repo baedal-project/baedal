@@ -26,7 +26,7 @@ public class OrderNestedResponseDto {
         this.ordersId = orders.getOrdersId();
         this.memberId = orders.getMember().getMemberId();
         this.orderDate = orders.getCreatedAt();
-        this.storeName = orders.getStoreName();
+        //this.storeName = orders.getStoreName();
         this.orderHasItems = orders.getOrderHasItems().stream()
                 .map(orderHasItem -> new OrderHasItemResponseDto(orderHasItem))
                 .collect(Collectors.toList());
