@@ -49,4 +49,5 @@ public interface OrderRepositoryCustom {
     //                .fetch();
     //
     //    }
+    List<Orders> getAllOrderWithPaging(int offset, int limit);
 }

@@ -29,7 +29,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
 //                .fetch();
 //        return orderHasItems;
 
-//    after refactoring
+//==========================================refactoring v1=========================
    @Override
     public List<Orders> getAllOrder(){
         //별칭으로 사용할 QType
@@ -48,6 +48,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
                 .fetch();
 
         return ordersList;
+//==========================================refactoring v2============================
+
 
     }
 
@@ -87,6 +89,27 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
 
         return order;
 
+    }
+
+    @Override
+    public List<Orders> getAllOrderWithPaging(int offset, int limit) {
+        QOrderHasItem orderHasItem3 = orderHasItem;
+        QItem item3 = item;
+
+        List<Orders> ordersListWithMemberOrders = queryFactory
+                .select(orders)
+                .from(orders)
+                .join(orders.member).fetchJoin()
+                //.join(orders.orderHasItems, orderHasItem1).fetchJoin()
+                //.join(orderHasItem1.item, item1).fetchJoin()
+                //.join(item1.store, store).fetchJoin()
+                .orderBy(orders.ordersId.asc())
+                .offset(offset)
+                .limit(limit)
+                //.distinct()
+                .fetch();
+
+        return ordersListWithMemberOrders;
     }
 
 

@@ -5,6 +5,7 @@ import com.example.baedal.dto.request.OrderRequestDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,6 +26,14 @@ public class OrderController {
     @GetMapping(value = "/api/orders")
     public ResponseDto<?> getAllOrder() {
         return orderService.getAllOrder();
+    }
+
+    //주문 전체 조회 v2
+    @GetMapping(value = "/api/v2/orders")
+    public ResponseDto<?> getAllOrderWithPaging(
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            @RequestParam(value = "limit", defaultValue = "10") int limit) {
+        return orderService.getAllOrderWithPaging(offset, limit);
     }
 
     //주문 상세 조회
