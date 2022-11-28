@@ -1,5 +1,6 @@
 package com.example.baedal.service;
 
+import com.example.baedal.domain.Store;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @EnableCaching
@@ -23,5 +26,11 @@ public class StoreService {
     public ResponseDto<?> getAllStore(Pageable pageable) {
 
         return ResponseDto.success(storeRepository.findAll(pageable));
+    }
+
+    @Transactional
+    public Store isPresentStore(Long id) {
+        Optional<Store> optionalStore = storeRepository.findById(id);
+        return optionalStore.orElse(null);
     }
 }

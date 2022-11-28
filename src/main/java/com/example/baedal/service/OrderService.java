@@ -4,6 +4,7 @@ import com.example.baedal.domain.Item;
 import com.example.baedal.domain.OrderHasItem;
 import com.example.baedal.domain.Orders;
 import com.example.baedal.dto.request.OrderRequestDto;
+import com.example.baedal.dto.response.MemberResponseDto;
 import com.example.baedal.dto.response.OrderNestedResponseDto;
 import com.example.baedal.dto.response.OrderResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
@@ -11,12 +12,13 @@ import com.example.baedal.repository.ItemRepository;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.OrderHasItemRepository;
 import com.example.baedal.repository.OrderRepository.OrderRepository;
+import com.querydsl.core.types.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.*;
 
@@ -29,16 +31,25 @@ public class OrderService {
     private final MemberRepository memberRepository;
 
     private final OrderHasItemRepository orderHasItemRepository;
+    private final MemberService memberService;
 
     @Transactional
     public ResponseDto<?> postOrder(OrderRequestDto requestDto) {
+
+        MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
+        if(null == member) {
+            return ResponseDto.fail("NOT_FOUND", "memberID is not exist");
+        }
+
 
         //itemId에 해당하는 내용들을 찾아서 리스트로
         List<Item> itemList = requestDto.getItemId()
                 .stream()
                 .map(item -> itemRepository.findByItemId(item).orElse(null))
                 .collect(toList());
-
+        if (null == itemList) {
+            return ResponseDto.fail("NOT_FOUND", "itemID is not exist");
+        }
 
         //item을 OrderHasItems에 넣어두기
         Orders order = Orders.builder()
@@ -122,6 +133,11 @@ public class OrderService {
                 new OrderNestedResponseDto(orders);
 
         return ResponseDto.success(collectOne);
+    }
+    @Transactional(readOnly = true)
+    public Item isPresentItem(Long id) {
+        Optional<Item> optionalPost = itemRepository.findById(id);
+        return optionalPost.orElse(null);
     }
 
 }
