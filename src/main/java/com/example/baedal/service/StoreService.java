@@ -27,10 +27,5 @@ public class StoreService {
 
         return ResponseDto.success(storeRepository.findAll(pageable));
     }
-
-    @Transactional
-    public Store isPresentStore(Long id) {
-        Optional<Store> optionalStore = storeRepository.findById(id);
-        return optionalStore.orElse(null);
-    }
+    
 }

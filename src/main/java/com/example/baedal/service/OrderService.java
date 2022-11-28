@@ -47,10 +47,9 @@ public class OrderService {
                 .stream()
                 .map(item -> itemRepository.findByItemId(item).orElse(null))
                 .collect(toList());
-        if (null == itemList) {
-            return ResponseDto.fail("NOT_FOUND", "itemID is not exist");
+        if (itemList.size()==0) {
+            return ResponseDto.fail("NEED_OVER_ONE","음식을 하나이상 주문해야합니다.");
         }
-
         //item을 OrderHasItems에 넣어두기
         Orders order = Orders.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))
@@ -133,11 +132,6 @@ public class OrderService {
                 new OrderNestedResponseDto(orders);
 
         return ResponseDto.success(collectOne);
-    }
-    @Transactional(readOnly = true)
-    public Item isPresentItem(Long id) {
-        Optional<Item> optionalPost = itemRepository.findById(id);
-        return optionalPost.orElse(null);
     }
 
 }

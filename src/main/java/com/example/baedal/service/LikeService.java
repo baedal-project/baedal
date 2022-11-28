@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.Optional;
 import java.util.Random;
 
 
@@ -49,19 +50,21 @@ public class LikeService {
         //System.out.println("평점 잘 데려오니" + dstar);
 
         Store store = storeRepository.findByStoreId(requestDto.getStoreId()).orElse(null);
-        if (null ==store) {
+        if(null == store) {
             return ResponseDto.fail("NOT_FOUND","storeId is not exist");
+
         }
         //System.out.println("가게 잘 찾아오니" + store.getName());
+        Likes pushlike = likeRepository.findByMemberAndStore(requestDto.getMemberId(), requestDto.getStoreId()).orElse(null);
+        if(!(null == pushlike)) {
+            return ResponseDto.fail("ALREADY_USED", "평가는 한번만 가능합니다.");
+        }
 
         Likes likes = Likes.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))
                 .store(store)
                 .star(star)
                 .build();
-        if (null == likes) {
-            return ResponseDto.fail("ALREADY_USED_ID", "이미 평가하셨습니다.");
-        }
         likeRepository.save(likes);
 
         //store에 평균점수 집어넣기
