@@ -28,8 +28,8 @@ public class Item extends Timestamped{
     @Column(nullable = false)
     private int price;
 
-    @Enumerated(EnumType.STRING)
-    private Category category;
+    //@Enumerated(EnumType.STRING)
+    private String category;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,

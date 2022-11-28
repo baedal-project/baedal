@@ -22,37 +22,35 @@ jobs:
         run: |
           mkdir src/main/resources
           cd ./src/main/resources
-          touch ./application.properties
           echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
         shell: bash
 
-        ## 2) 스프링 프로젝트 jar 파일 빌드
+        ## 2) Gradle Cachw 적용
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+        ## 3) 스프링 프로젝트 jar 파일 빌드
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
 
-        ## 3) Docker Hub에 이미지 push 하기
-        ## 웹 이미지 빌드 및 도커허브에 push
-#      - name: Login to DockerHub
-#        uses: docker/login-action@v2
-#        with:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-#      - name: web docker build and push
-#        run: |
-#          docker build -t puri12/baedal:${{ github.sha }} .
-#          docker build -t puri12/baedal .
-#          docker push puri12/baedal:${{ github.sha }}
-#          docker push puri12/baedal
-          
+        ## 4) 깃허브 레지스트리 사용을 위한 로그인
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ secrets.USER }}
           password: ${{ secrets.CR_PAT }}
+
+        ## 5) 깃허브 레지스트리에 Docker 빌드 후 이미지 업로드
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
@@ -63,13 +61,10 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/baedal:latest
             ghcr.io/${{ github.repository_owner }}/baedal:${{ github.sha }}
 
-        ## 4) Docker Hub에 Push한 이미지를 리눅스 서버에 받아와서 run
+        ## 6) Docker Hub에 Push한 이미지를 리눅스 서버에 받아와서 run
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
-          #          host: ${{ secrets.AWS_HOST_ADDRESS }}
-          #          username: ubuntu
-          #          key: ${{ secrets.SSH_PRIVATE_KEY }}
           host: ${{ secrets.DEV_HOST_ADDRESS }}
           port: ${{ secrets.DEV_SSH_PORT }}
           username: ${{ secrets.DEV_SSH_USERNAME }}
@@ -77,7 +72,3 @@ jobs:
           script: |
             docker pull ghcr.io/baedal-project/baedal
             docker-compose up -d
-#             docker pull puri12/code99:${{ github.sha }}
-#             docker stop code99
-#             docker rm code99
-#             docker run -d --rm --name code99 -p 80:8080 puri12/code99:${{ github.sha }}

@@ -42,7 +42,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
                 .join(orders.member).fetchJoin()
                 .join(orders.orderHasItems, orderHasItem1).fetchJoin()
                 .join(orderHasItem1.item, item1).fetchJoin()
-                .join(item1.store, store).fetchJoin()
+                //.join(item1.store, store).fetchJoin()
                 .orderBy(orders.ordersId.asc())
                 .distinct()
                 .fetch();
@@ -80,7 +80,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
                 .join(orders.member).fetchJoin()
                 .join(orders.orderHasItems, orderHasItem2).fetchJoin()
                 .join(orderHasItem2.item, item2).fetchJoin()
-                .join(item2.store, store).fetchJoin()
+                //.join(item2.store, store).fetchJoin()
                 .distinct()
                 .where(orders.ordersId.eq(id))
                 .fetchOne();

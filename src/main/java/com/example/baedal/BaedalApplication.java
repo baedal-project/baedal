@@ -3,7 +3,7 @@ package com.example.baedal;
 import com.example.baedal.domain.Item;
 import com.example.baedal.domain.Store;
 import com.example.baedal.repository.ItemRepository;
-import com.example.baedal.repository.StoreRepository;
+import com.example.baedal.repository.StoreRepository.StoreRepository;
 import com.example.baedal.shared.Category;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -36,10 +36,10 @@ public class BaedalApplication {
 //        return (args) -> {
 //            //storeRepository.save(new Store(1,"족발집","jecheon-si",Category.JOCKBAL,"족발집"));
 //            //itemRepository.save(Item.builder().price(1500).category(Category.JOCKBAL).name("치킨").build());
-//            itemRepository.save(Item.builder().price(1500).category(Category.JOCKBAL).name("족발").store(Store.builder().storeId(1L).build()).build());
-//            itemRepository.save(Item.builder().price(1500).category(Category.JOCKBAL).name("족발").store(Store.builder().storeId(1L).build()).build());
-//            itemRepository.save(Item.builder().price(2500).category(Category.JOCKBAL).name("족발").store(Store.builder().storeId(2L).build()).build());
-//            itemRepository.save(Item.builder().price(3000).category(Category.JOCKBAL).name("족발").store(Store.builder().storeId(2L).build()).build());
+//            itemRepository.save(Item.builder().price(1500).category("JOCKBAL").name("족발").store(Store.builder().storeId(1L).build()).build());
+//            itemRepository.save(Item.builder().price(1500).category("JOCKBAL").name("족발").store(Store.builder().storeId(1L).build()).build());
+//            itemRepository.save(Item.builder().price(2500).category("JockBAL").name("족발").store(Store.builder().storeId(2L).build()).build());
+//            itemRepository.save(Item.builder().price(3000).category("JOCKBAL").name("족발").store(Store.builder().storeId(2L).build()).build());
 //
 //        };
 //    }

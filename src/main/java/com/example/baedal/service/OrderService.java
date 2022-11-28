@@ -13,12 +13,14 @@ import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.OrderHasItemRepository;
 import com.example.baedal.repository.OrderRepository.OrderRepository;
 import com.querydsl.core.types.Order;
+import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.*;
 
@@ -29,6 +31,7 @@ public class OrderService {
     private final ItemRepository itemRepository;
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
+    private final StoreRepository storeRepository;
 
     private final OrderHasItemRepository orderHasItemRepository;
     private final MemberService memberService;
@@ -52,8 +55,10 @@ public class OrderService {
         //item을 OrderHasItems에 넣어두기
         Orders order = Orders.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))
-                .storeName(requestDto.getStoreName())
+                .store(storeRepository.findByStoreId(requestDto.getStoreId()).orElse(null))
                 .build();
+        //System.out.println("storeName 잘 나오나 보자" + storeRepository.getStoreName(requestDto.getStoreId()));
+
         orderRepository.save(order);
 
 //        List<OrderHasItem> orderHasItems = itemList.stream().map(item -> OrderHasItem.builder()
