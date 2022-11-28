@@ -19,8 +19,8 @@ public class Orders extends Timestamped{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ordersId;
 
-    @Column(nullable = false)
-    private String storeName;
+//    @Column(nullable = false)
+//    private String storeName;
 
     //@JsonBackReference
     //@JsonIgnore
@@ -36,5 +36,7 @@ public class Orders extends Timestamped{
     )
     private List<OrderHasItem> orderHasItems = new ArrayList<>();
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="store_Id", nullable = false)
+    private Store store;
 }

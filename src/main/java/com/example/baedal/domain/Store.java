@@ -50,4 +50,14 @@ public class Store extends Timestamped{
             orphanRemoval = true
     )
     private List<Likes> likes = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "store",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Orders> orders = new ArrayList<>();
+
+
 }

@@ -19,6 +19,6 @@ public class OrderRequestDto {
     private List<Long> itemId;
     private List<Integer> amount;
     private Long memberId;
-    private String storeName;
+    //private String storeName;
 
 }

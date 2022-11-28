@@ -3,7 +3,7 @@ package com.example.baedal;
 import com.example.baedal.domain.Item;
 import com.example.baedal.domain.Store;
 import com.example.baedal.repository.ItemRepository;
-import com.example.baedal.repository.StoreRepository;
+import com.example.baedal.repository.StoreRepository.StoreRepository;
 import com.example.baedal.shared.Category;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

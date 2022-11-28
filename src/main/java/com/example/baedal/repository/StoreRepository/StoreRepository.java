@@ -1,4 +1,4 @@
-package com.example.baedal.repository;
+package com.example.baedal.repository.StoreRepository;
 
 import com.example.baedal.domain.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface StoreRepository extends JpaRepository<Store, Long> {
+public interface StoreRepository extends JpaRepository<Store, Long>, StoreRepositoryCustom {
     List<Store> findAll();
 
 
@@ -20,4 +20,5 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findByNameContainsAndAddressContains(String name, String address);
 
     Optional<Store> findByStoreId(Long storeId);
+
 }
