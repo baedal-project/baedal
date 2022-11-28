@@ -56,7 +56,7 @@ public class LikeService {
         }
         //System.out.println("가게 잘 찾아오니" + store.getName());
         Likes pushlike = likeRepository.findByMemberAndStore(requestDto.getMemberId(), requestDto.getStoreId()).orElse(null);
-        if(!(null == pushlike)) {
+        if(null != pushlike) {
             return ResponseDto.fail("ALREADY_USED", "평가는 한번만 가능합니다.");
         }
 

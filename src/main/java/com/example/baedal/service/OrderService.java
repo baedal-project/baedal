@@ -35,7 +35,9 @@ public class OrderService {
 
     @Transactional
     public ResponseDto<?> postOrder(OrderRequestDto requestDto) {
-
+        if (requestDto.getItemId().size() == 0) {
+            return ResponseDto.fail("NEED_OVER_ONE","음식을 하나이상 주문해야합니다.");
+        }
         MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
         if(null == member) {
             return ResponseDto.fail("NOT_FOUND", "memberID is not exist");
@@ -47,9 +49,6 @@ public class OrderService {
                 .stream()
                 .map(item -> itemRepository.findByItemId(item).orElse(null))
                 .collect(toList());
-        if (itemList.size()==0) {
-            return ResponseDto.fail("NEED_OVER_ONE","음식을 하나이상 주문해야합니다.");
-        }
         //item을 OrderHasItems에 넣어두기
         Orders order = Orders.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))

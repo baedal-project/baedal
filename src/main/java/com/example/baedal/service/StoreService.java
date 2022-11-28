@@ -27,5 +27,4 @@ public class StoreService {
 
         return ResponseDto.success(storeRepository.findAll(pageable));
     }
-    
 }
