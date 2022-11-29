@@ -60,6 +60,9 @@ dependencies {
     // 캐시
     implementation 'org.springframework.boot:spring-boot-starter-cache:2.7.5'
 
+    //redis cache
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 }
 
 tasks.named('test') {

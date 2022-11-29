@@ -13,6 +13,7 @@ import com.example.baedal.repository.OrderHasItemRepository;
 import com.example.baedal.repository.OrderRepository.OrderRepository;
 import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,6 +83,8 @@ public class OrderService {
 
     }
 
+    //condition, key 값도 추가 가능
+    @Cacheable(value = "orderLists")
     @Transactional(readOnly = true)
     public ResponseDto<?> getAllOrder() {
         //memberId, storeId, amount, item
@@ -114,6 +117,7 @@ public class OrderService {
         return ResponseDto.success(collect);
     }
 
+    @Cacheable(value = "orderSingle")
     @Transactional(readOnly = true)
     public ResponseDto<?> getOneOrder(Long id) {
 
