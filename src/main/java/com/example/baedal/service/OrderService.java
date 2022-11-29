@@ -4,6 +4,7 @@ import com.example.baedal.domain.Item;
 import com.example.baedal.domain.OrderHasItem;
 import com.example.baedal.domain.Orders;
 import com.example.baedal.dto.request.OrderRequestDto;
+import com.example.baedal.dto.response.MemberResponseDto;
 import com.example.baedal.dto.response.OrderNestedResponseDto;
 import com.example.baedal.dto.response.OrderResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
@@ -11,12 +12,14 @@ import com.example.baedal.repository.ItemRepository;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.OrderHasItemRepository;
 import com.example.baedal.repository.OrderRepository.OrderRepository;
+import com.querydsl.core.types.Order;
 import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Objects;
 
 import static java.util.stream.Collectors.*;
@@ -31,17 +34,24 @@ public class OrderService {
     private final StoreRepository storeRepository;
 
     private final OrderHasItemRepository orderHasItemRepository;
+    private final MemberService memberService;
 
     @Transactional
     public ResponseDto<?> postOrder(OrderRequestDto requestDto) {
+        if (requestDto.getItemId().size() == 0) {
+            return ResponseDto.fail("NEED_OVER_ONE","음식을 하나이상 주문해야합니다.");
+        }
+        MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
+        if(null == member) {
+            return ResponseDto.fail("NOT_FOUND", "memberID is not exist");
+        }
+
 
         //itemId에 해당하는 내용들을 찾아서 리스트로
         List<Item> itemList = requestDto.getItemId()
                 .stream()
                 .map(item -> itemRepository.findByItemId(item).orElse(null))
                 .collect(toList());
-
-
         //item을 OrderHasItems에 넣어두기
         Orders order = Orders.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))

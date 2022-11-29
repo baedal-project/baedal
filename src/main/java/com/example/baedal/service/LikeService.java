@@ -4,6 +4,7 @@ package com.example.baedal.service;
 import com.example.baedal.domain.Likes;
 import com.example.baedal.domain.Store;
 import com.example.baedal.dto.request.LikeRequestDto;
+import com.example.baedal.dto.response.MemberResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.LikeRepository;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.Optional;
 import java.util.Random;
 
 
@@ -24,12 +26,19 @@ public class LikeService {
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
 
+    private final MemberService memberService;
+    private final StoreService storeService;
+
     int max = 5;
     int min = 0;
     double initStar = 0.0;
 
     @Transactional
     public ResponseDto<?> postLike(LikeRequestDto requestDto) {
+        MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
+        if(null == member) {
+            return ResponseDto.fail("NOT_FOUND","memberId is not exist");
+        }
 
         //random number generator
         //returns a value in the range [0,5]
@@ -41,14 +50,21 @@ public class LikeService {
         //System.out.println("평점 잘 데려오니" + dstar);
 
         Store store = storeRepository.findByStoreId(requestDto.getStoreId()).orElse(null);
+        if(null == store) {
+            return ResponseDto.fail("NOT_FOUND","storeId is not exist");
+
+        }
         //System.out.println("가게 잘 찾아오니" + store.getName());
+        Likes pushlike = likeRepository.findByMemberAndStore(requestDto.getMemberId(), requestDto.getStoreId()).orElse(null);
+        if(null != pushlike) {
+            return ResponseDto.fail("ALREADY_USED", "평가는 한번만 가능합니다.");
+        }
 
         Likes likes = Likes.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))
                 .store(store)
                 .star(star)
                 .build();
-
         likeRepository.save(likes);
 
         //store에 평균점수 집어넣기

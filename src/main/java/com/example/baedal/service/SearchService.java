@@ -22,8 +22,10 @@ public class SearchService {
     @Transactional
     public ResponseDto<?> search(SearchRequestDto requestDto) {
         Member member = memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null);
+        if(null == member) {
+            return ResponseDto.fail("NOT_FOUND", "memberId is not exist");
+        }
         List<Store> stores = storeRepository.findByNameContainsAndAddressContains(requestDto.getKeyword(), member.getAddress());
-
         return ResponseDto.success(stores);
     }
 }
