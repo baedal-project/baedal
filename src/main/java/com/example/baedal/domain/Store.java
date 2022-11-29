@@ -59,5 +59,8 @@ public class Store extends Timestamped{
     )
     private List<Orders> orders = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="member_Id", nullable = false)
+    private Member member;
 
 }
