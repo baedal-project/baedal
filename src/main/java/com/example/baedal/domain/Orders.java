@@ -3,6 +3,7 @@ package com.example.baedal.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class Orders extends Timestamped{
     private Member member;
 
     @JsonIgnore
+    //@BatchSize(size = 10)
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "orders",
             cascade = CascadeType.ALL,

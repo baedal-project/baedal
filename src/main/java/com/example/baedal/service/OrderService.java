@@ -108,19 +108,33 @@ public class OrderService {
 //        return ResponseDto.success(collect);
 //        return ResponseDto.success(orderHasItemRepository.findAll());
 
-        //===================================================================
-        //after refactoring
+        //==============================Refactor v1=====================================
         //memberId(memberName?), storeId(storeName?), itemId(name?), itemAmount, itemPrice, createdAt
 
         //comparison1) Repository findAll
         //List<Orders> orders = orderRepository.findAll();
 
-        //comparison2)
+        //==============================Refactor v2======================================
         List<Orders> orders = orderRepository.getAllOrder();
         List<OrderNestedResponseDto> collect = orders.stream()
                 .map(OrderNestedResponseDto::new)
                 .collect(toList());
 
+        return ResponseDto.success(collect);
+
+    }
+
+    //==========================Refactor v3(solve paging problem)========================================
+        /*problem :
+        OrderNestedResponseDto안에 OrderItems
+        -> FetchType.LAZY
+        -> stream 돌 때 orderhasitems 수만큼 select query
+            + orderhasitems안에 Item수만큼 select query*/
+    public ResponseDto<?> getAllOrderWithPaging(int offset, int limit){
+        List<Orders> orderWithPaging = orderRepository.getAllOrderWithPaging(offset, limit);
+        List<OrderNestedResponseDto> collect = orderWithPaging.stream()
+                .map(OrderNestedResponseDto::new)
+                .collect(toList());
         return ResponseDto.success(collect);
     }
 
