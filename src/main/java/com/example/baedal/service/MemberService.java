@@ -35,6 +35,21 @@ public class MemberService {
         );
     }
 
+    @Transactional
+    public ResponseDto<?> login(Long id) {
+        MemberResponseDto member = isPresentMember(id);
+        if (null == member){
+            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 유저 id 입니다.");
+        }
+        return ResponseDto.success(
+                MemberResponseDto.builder()
+                        .Id(member.getId())
+                        .name(member.getName())
+                        .build()
+        );
+
+    }
+
     @Transactional(readOnly = true)
 
     public ResponseDto<?> getAllMember() {

@@ -6,6 +6,7 @@ import com.example.baedal.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
@@ -15,6 +16,13 @@ public class MemberController {
     @PostMapping (value = "/api/members/signup")
     public ResponseDto<?> signup(@RequestBody MemberRequestDto requestDto) {
         return memberService.createMember(requestDto);
+    }
+
+    //로그인
+    @PostMapping(value = "/api/members/{memberId}/login")
+    public ResponseDto<?> login(@PathVariable Long memberId){
+        System.out.println("memberId 잘 나오나 보자" + memberId);
+        return memberService.login(memberId);
     }
     @GetMapping (value = "/api/members")
     public ResponseDto<?> getAllMember() {
