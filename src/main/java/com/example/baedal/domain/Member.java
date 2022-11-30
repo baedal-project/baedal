@@ -44,7 +44,7 @@ public class Member extends Timestamped {
     )
     private List<Likes> likes = new ArrayList<>();
 
-    @JsonIgnore
+
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "member",
             cascade = CascadeType.ALL,
