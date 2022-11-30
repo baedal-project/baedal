@@ -1,5 +1,6 @@
 package com.example.baedal.domain;
 
+import com.example.baedal.shared.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -25,6 +26,9 @@ public class Member extends Timestamped {
     @Column(nullable = false)
     private String address;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "member",
@@ -40,4 +44,17 @@ public class Member extends Timestamped {
             orphanRemoval = true
     )
     private List<Likes> likes = new ArrayList<>();
+
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "member",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Store> stores = new ArrayList<>();
+
+    public Member(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
 }

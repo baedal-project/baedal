@@ -4,19 +4,25 @@ import com.example.baedal.domain.Item;
 import com.example.baedal.domain.OrderHasItem;
 import com.example.baedal.domain.Orders;
 import com.example.baedal.dto.request.OrderRequestDto;
-import com.example.baedal.dto.response.AllOrderResponseDto;
+import com.example.baedal.dto.response.MemberResponseDto;
+import com.example.baedal.dto.response.OrderNestedResponseDto;
 import com.example.baedal.dto.response.OrderResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.ItemRepository;
-import com.example.baedal.repository.MemberRepository;
+import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.OrderHasItemRepository;
-import com.example.baedal.repository.OrderRepository;
+import com.example.baedal.repository.OrderRepository.OrderRepository;
+import com.querydsl.core.types.Order;
+import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,23 +31,34 @@ public class OrderService {
     private final ItemRepository itemRepository;
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
+    private final StoreRepository storeRepository;
 
     private final OrderHasItemRepository orderHasItemRepository;
+    private final MemberService memberService;
 
     @Transactional
     public ResponseDto<?> postOrder(OrderRequestDto requestDto) {
+        if (requestDto.getItemId().size() == 0) {
+            return ResponseDto.fail("NEED_OVER_ONE","음식을 하나이상 주문해야합니다.");
+        }
+        MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
+        if(null == member) {
+            return ResponseDto.fail("NOT_FOUND", "memberID is not exist");
+        }
+
 
         //itemId에 해당하는 내용들을 찾아서 리스트로
         List<Item> itemList = requestDto.getItemId()
                 .stream()
                 .map(item -> itemRepository.findByItemId(item).orElse(null))
-                .collect(Collectors.toList());
-
-
+                .collect(toList());
         //item을 OrderHasItems에 넣어두기
         Orders order = Orders.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))
+                .store(storeRepository.findByStoreId(requestDto.getStoreId()).orElse(null))
                 .build();
+        //System.out.println("storeName 잘 나오나 보자" + storeRepository.getStoreName(requestDto.getStoreId()));
+
         orderRepository.save(order);
 
 //        List<OrderHasItem> orderHasItems = itemList.stream().map(item -> OrderHasItem.builder()
@@ -51,7 +68,7 @@ public class OrderService {
 //                .build()).collect(Collectors.toList());
 
         //orderHasItemRepository.saveAll(orderHasItems);
-        System.out.println(requestDto.getAmount());
+        //System.out.println(requestDto.getAmount());
     for (int i=0; i<requestDto.getItemId().size(); i++){
         Item item = itemList.get(i);
         Integer amount = requestDto.getAmount().get(i);
@@ -70,32 +87,77 @@ public class OrderService {
                         .memberId(requestDto.getMemberId())
                         .storeId(requestDto.getStoreId())
                         .createdAt(order.getCreatedAt())
-                        .modifiedAt(order.getModifiedAt())
-                        .build()
-        );
+                        //.modifiedAt(order.getModifiedAt())
+                        .build());
+
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseDto<?> getAllOrder() {
         //memberId, storeId, amount, item
         //return ResponseDto.success(orderHasItemRepository.findAll().stream().map(v->v.getOrders()));
         //return ResponseDto.success(orderHasItemRepository.findAll());
 
-        List<AllOrderResponseDto> collect = orderHasItemRepository.findAll().stream().map(v -> AllOrderResponseDto.builder()
-                .ordersId(v.getOrders().getOrdersId())
-                .itemId(v.getItem().getItemId())
-                .memberId(v.getOrders().getMember().getMemberId())
-                .storeId(v.getItem().getStore().getStoreId()).build()).collect(Collectors.toList());
+        //before refactoring
+//        List<AllOrderResponseDto> collect = orderHasItemRepository.findAll().stream().map(v -> AllOrderResponseDto.builder()
+//                .ordersId(v.getOrders().getOrdersId())
+//                .itemId(v.getItem().getItemId())
+//                .memberId(v.getOrders().getMember().getMemberId())
+//                .storeId(v.getItem().getStore().getStoreId()).build()).collect(Collectors.toList());
+
+//        return ResponseDto.success(collect);
+//        return ResponseDto.success(orderHasItemRepository.findAll());
+
+        //==============================Refactor v1=====================================
+        //memberId(memberName?), storeId(storeName?), itemId(name?), itemAmount, itemPrice, createdAt
+
+        //comparison1) Repository findAll
+        //List<Orders> orders = orderRepository.findAll();
+
+        //==============================Refactor v2======================================
+        List<Orders> orders = orderRepository.getAllOrder();
+        List<OrderNestedResponseDto> collect = orders.stream()
+                .map(OrderNestedResponseDto::new)
+                .collect(toList());
 
         return ResponseDto.success(collect);
-        //return ResponseDto.success(orderHasItemRepository.findAll());
 
+    }
 
+    //==========================Refactor v3(solve paging problem)========================================
+        /*problem :
+        OrderNestedResponseDto안에 OrderItems
+        -> FetchType.LAZY
+        -> stream 돌 때 orderhasitems 수만큼 select query
+            + orderhasitems안에 Item수만큼 select query*/
+    @Transactional
+    public ResponseDto<?> getAllOrderWithPaging(Pageable pageable){
+        Page<Orders> orderWithPaging = orderRepository.getAllOrderWithPaging(pageable);
+        List<OrderNestedResponseDto> collect = orderWithPaging.stream()
+                //.map(OrderNestedResponseDto::new)
+                .map(v -> new OrderNestedResponseDto(v))
+                .collect(toList());
+        List<Object> count = new ArrayList<>();
+        count.add(collect);
+        HashMap<String,Integer> counts = new HashMap<>();
+        counts.put("pages",orderWithPaging.getTotalPages());
+        count.add(counts);
+        //return ResponseDto.success(collect);
+        return ResponseDto.success(count);
     }
 
     @Transactional(readOnly = true)
     public ResponseDto<?> getOneOrder(Long id) {
-        return ResponseDto.success(orderRepository.findByOrdersId(id));
+
+        //comparison1) JPA 사용
+        //return ResponseDto.success(orderRepository.getOneOrder(id));
+
+        //comparison2)
+        Orders orders = orderRepository.getOneOrder(id);
+        OrderNestedResponseDto collectOne =
+                new OrderNestedResponseDto(orders);
+
+        return ResponseDto.success(collectOne);
     }
 
 }

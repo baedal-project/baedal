@@ -4,7 +4,7 @@ import com.example.baedal.domain.Member;
 import com.example.baedal.dto.request.MemberRequestDto;
 import com.example.baedal.dto.response.MemberResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
-import com.example.baedal.repository.MemberRepository;
+import com.example.baedal.repository.MemberRepository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +16,8 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    @Transactional  //회원가입
+    @Transactional
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
-
         Member member = Member.builder()
                 .name(requestDto.getName())
                 .address(requestDto.getAddress())
@@ -35,46 +34,61 @@ public class MemberService {
                         .build()
         );
     }
-    @Transactional
-    public ResponseDto<?> getAllMember() {
-        return ResponseDto.success(memberRepository.findAll());
-    }
-
-    @Transactional
-    public ResponseDto<?> getOneMember(Long id) {
-        Member member =isPresentMember(id);
-        if (null == member) {
-            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 유저 id 입니다.");
-        }
-    return ResponseDto.success(
-            MemberResponseDto.builder()
-                    .Id(member.getMemberId())
-                    .name(member.getName())
-                    .address(member.getAddress())
-                    .modifiedAt(member.getModifiedAt())
-                    .createdAt(member.getCreatedAt())
-                    .build()
-        );
-    }
 
     @Transactional
     public ResponseDto<?> login(Long id) {
-        Member member = isPresentMember(id);
+        MemberResponseDto member = isPresentMember(id);
         if (null == member){
             return ResponseDto.fail("NOT_FOUND", "존재하지 않는 유저 id 입니다.");
         }
         return ResponseDto.success(
                 MemberResponseDto.builder()
-                        .Id(member.getMemberId())
+                        .Id(member.getId())
                         .name(member.getName())
                         .build()
         );
 
     }
 
-    //@Transactional
-    private Member isPresentMember(Long id) {
-        Optional<Member> optionalMember = memberRepository.findByMemberId(id);
+    @Transactional(readOnly = true)
+
+    public ResponseDto<?> getAllMember() {
+        //return ResponseDto.success(memberRepository.findAll());
+        //refactoring
+        return ResponseDto.success(memberRepository.findIdNameAddress());
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<?> getOneMember(Long id) {
+        //Member member =isPresentMember(id);
+        MemberResponseDto member = isPresentMember(id);
+        if (null == member) {
+            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 유저 id 입니다.");
+        }
+
+        //before refactoring
+//    return ResponseDto.success(
+//            MemberResponseDto.builder()
+//                    .Id(member.getMemberId())
+//                    .name(member.getName())
+//                    .address(member.getAddress())
+//                    .modifiedAt(member.getModifiedAt())
+//                    .createdAt(member.getCreatedAt())
+//                    .build()
+//    );
+        //after refactoring(1개 조회라 그런지 시간 차이 많이 x)
+        return ResponseDto.success(memberRepository.findByMemberIdCustom(id));
+    }
+
+    //    @Transactional
+//    public Member isPresentMember(Long id) {
+//        //Optional<Member> optionalMember = memberRepository.findByMemberId(id);
+//        return optionalMember.orElse(null);
+//    }
+    @Transactional
+    public MemberResponseDto isPresentMember(Long id) {
+        Optional<MemberResponseDto> optionalMember = memberRepository.findByMemberIdCustom(id);
         return optionalMember.orElse(null);
+
     }
 }

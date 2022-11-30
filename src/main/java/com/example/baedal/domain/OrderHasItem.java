@@ -19,13 +19,13 @@ public class OrderHasItem {
     //FK
     //주문메뉴 테이블
     //@JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="orders_Id", nullable = true)
     private Orders orders;
 
     //FK
     //@JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="item_Id", nullable = true)
     private Item item;
 
