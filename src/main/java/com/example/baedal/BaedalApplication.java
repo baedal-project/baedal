@@ -1,6 +1,7 @@
 package com.example.baedal;
 
 import com.example.baedal.domain.Item;
+import com.example.baedal.domain.Member;
 import com.example.baedal.domain.Store;
 import com.example.baedal.repository.ItemRepository;
 import com.example.baedal.repository.StoreRepository.StoreRepository;
@@ -18,18 +19,20 @@ public class BaedalApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BaedalApplication.class, args);
+
     }
 
 //    @Bean
-//    public CommandLineRunner demo(StoreRepository storeRepository) {
+//    public CommandLineRunner demo (StoreRepository storeRepository){
 //        return (args) -> {
-//            storeRepository.save(Store.builder().name("명동왕족").address("jecheon-si").category("JOCKBAL").build());
+//            storeRepository.save(Store.builder().name("명동왕족").address("jecheon-si").category("JOCKBAL").member(Member.builder().memberId(1L).build()));
 //            storeRepository.save(Store.builder().name("오향족발").address("jecheon-si").category("JOCKBAL").build());
 //            storeRepository.save(Store.builder().name("족황상제").address("jecheon-si").category("JOCKBAL").build());
 //
 //
 //        };
 //    }
+
 //
 //    @Bean
 //    public CommandLineRunner demo(ItemRepository itemRepository) {

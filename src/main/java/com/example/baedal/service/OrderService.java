@@ -15,12 +15,12 @@ import com.example.baedal.repository.OrderRepository.OrderRepository;
 import com.querydsl.core.types.Order;
 import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.stream.Collectors.*;
 
@@ -130,12 +130,20 @@ public class OrderService {
         -> FetchType.LAZY
         -> stream 돌 때 orderhasitems 수만큼 select query
             + orderhasitems안에 Item수만큼 select query*/
-    public ResponseDto<?> getAllOrderWithPaging(int offset, int limit){
-        List<Orders> orderWithPaging = orderRepository.getAllOrderWithPaging(offset, limit);
+    @Transactional
+    public ResponseDto<?> getAllOrderWithPaging(Pageable pageable){
+        Page<Orders> orderWithPaging = orderRepository.getAllOrderWithPaging(pageable);
         List<OrderNestedResponseDto> collect = orderWithPaging.stream()
-                .map(OrderNestedResponseDto::new)
+                //.map(OrderNestedResponseDto::new)
+                .map(v -> new OrderNestedResponseDto(v))
                 .collect(toList());
-        return ResponseDto.success(collect);
+        List<Object> count = new ArrayList<>();
+        count.add(collect);
+        HashMap<String,Integer> counts = new HashMap<>();
+        counts.put("pages",orderWithPaging.getTotalPages());
+        count.add(counts);
+        //return ResponseDto.success(collect);
+        return ResponseDto.success(count);
     }
 
     @Transactional(readOnly = true)

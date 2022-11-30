@@ -6,6 +6,8 @@ import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.BatchSize;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,17 +31,23 @@ public class OrderController {
     }
 
     //주문 전체 조회 v2
+//    @GetMapping(value = "/api/v2/orders")
+//    public ResponseDto<?> getAllOrderWithPaging(
+//            @RequestParam(value = "offset", defaultValue = "0") int offset,
+//            @RequestParam(value = "limit", defaultValue = "10") int limit,
+//            ) {
+//        return orderService.getAllOrderWithPaging(pageable);
+//    }
     @GetMapping(value = "/api/v2/orders")
-    public ResponseDto<?> getAllOrderWithPaging(
-            @RequestParam(value = "offset", defaultValue = "0") int offset,
-            @RequestParam(value = "limit", defaultValue = "10") int limit) {
-        return orderService.getAllOrderWithPaging(offset, limit);
+    public ResponseDto<?> getAllOrderWithPaging(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+        return orderService.getAllOrderWithPaging(pageable);
     }
 
     //주문 상세 조회
     //@LogExecutionTime
     @GetMapping(value = "/api/orders/{orderId}")
     public ResponseDto<?> getOrder(@PathVariable Long orderId){
+
         return orderService.getOneOrder(orderId);
     }
 

@@ -18,8 +18,9 @@ public class OrderNestedResponseDto {
 
     private Long ordersId;
     private Long memberId;
+    //private int totalPage;
     private LocalDateTime orderDate;
-    private String storeName;
+    //private String storeName;
     private List<OrderHasItemResponseDto> orderHasItems;
 
     public OrderNestedResponseDto(Orders orders){
@@ -31,4 +32,8 @@ public class OrderNestedResponseDto {
                 .map(orderHasItem -> new OrderHasItemResponseDto(orderHasItem))
                 .collect(Collectors.toList());
     }
+
+//    public OrderNestedResponseDto(int totalPage) {
+//        this.totalPage = totalPage;
+//    }
 }

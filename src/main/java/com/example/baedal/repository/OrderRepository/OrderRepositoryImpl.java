@@ -1,8 +1,13 @@
 package com.example.baedal.repository.OrderRepository;
 
 import com.example.baedal.domain.*;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
@@ -91,8 +96,30 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
 
     }
 
+//    @Override
+//    public List<Orders> getAllOrderWithPaging(int offset, int limit, Pageable pageable) {
+//        QOrderHasItem orderHasItem3 = orderHasItem;
+//        QItem item3 = item;
+//
+//        List<Orders> ordersListWithMemberOrders = queryFactory
+//                .select(orders)
+//                .from(orders)
+//                .join(orders.member).fetchJoin()
+//                //.join(orders.orderHasItems, orderHasItem1).fetchJoin()
+//                //.join(orderHasItem1.item, item1).fetchJoin()
+//                //.join(item1.store, store).fetchJoin()
+//                .orderBy(orders.ordersId.asc())
+//                .offset(offset)
+//                .limit(limit)
+//                .offset(pageable.getNumberOfPages())
+//                //.distinct()
+//                .fetch();
+//
+//        return ordersListWithMemberOrders;
+//    }
+
     @Override
-    public List<Orders> getAllOrderWithPaging(int offset, int limit) {
+    public Page<Orders> getAllOrderWithPaging(Pageable pageable) {
         QOrderHasItem orderHasItem3 = orderHasItem;
         QItem item3 = item;
 
@@ -104,12 +131,16 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
                 //.join(orderHasItem1.item, item1).fetchJoin()
                 //.join(item1.store, store).fetchJoin()
                 .orderBy(orders.ordersId.asc())
-                .offset(offset)
-                .limit(limit)
-                //.distinct()
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        return ordersListWithMemberOrders;
+        JPAQuery<Long> count = queryFactory
+                .select(orders.count())
+                .from(orders);
+
+
+        return PageableExecutionUtils.getPage(ordersListWithMemberOrders,pageable,count::fetchOne);
     }
 
 

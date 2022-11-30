@@ -1,6 +1,8 @@
 package com.example.baedal.repository.OrderRepository;
 
 import com.example.baedal.domain.Orders;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -49,5 +51,6 @@ public interface OrderRepositoryCustom {
     //                .fetch();
     //
     //    }
-    List<Orders> getAllOrderWithPaging(int offset, int limit);
+//    List<Orders> getAllOrderWithPaging(int offset, int limit, Pageable pageable);
+    Page<Orders> getAllOrderWithPaging(Pageable pageable);
 }
