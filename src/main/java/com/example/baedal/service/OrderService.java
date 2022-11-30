@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Objects;
 
 import static java.util.stream.Collectors.*;
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @RequiredArgsConstructor
@@ -77,8 +78,14 @@ public class OrderService {
                 .item(item)
                 .amount(amount)
                 .build();
+        if((item.getAmount() - amount)<0) {
+            return ResponseDto.fail("NOT_ENOUGH_ITEM","재고가 부족합니다");
+        }
         orderHasItemRepository.save(item1);
+        item.setAmount(item.getAmount()-amount);
     }
+
+
 
         return ResponseDto.success(
                 OrderResponseDto.builder()
