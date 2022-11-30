@@ -54,7 +54,21 @@ public class MemberService {
                     .modifiedAt(member.getModifiedAt())
                     .createdAt(member.getCreatedAt())
                     .build()
-    );
+        );
+    }
+
+    @Transactional
+    public ResponseDto<?> login(Long id) {
+        Member member = isPresentMember(id);
+        if (null == member){
+            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 유저 id 입니다.");
+        }
+        return ResponseDto.success(
+                MemberResponseDto.builder()
+                        .Id(member.getMemberId())
+                        .name(member.getName())
+                        .build()
+        );
 
     }
 
@@ -63,7 +77,4 @@ public class MemberService {
         Optional<Member> optionalMember = memberRepository.findByMemberId(id);
         return optionalMember.orElse(null);
     }
-
-
-
 }
