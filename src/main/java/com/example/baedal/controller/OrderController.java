@@ -43,6 +43,12 @@ public class OrderController {
         return orderService.getAllOrderWithPaging(pageable);
     }
 
+    //queryDsl 없이 paging 처리
+    @GetMapping (value = "api/v3/orders")
+    public ResponseDto<?> getAllStore(@PageableDefault(page = 0, size = 10)Pageable pageable) {
+        return orderService.getAllOrdersWithJPAPaging(pageable);
+    }
+
     //주문 상세 조회
     //@LogExecutionTime
     @GetMapping(value = "/api/orders/{orderId}")
