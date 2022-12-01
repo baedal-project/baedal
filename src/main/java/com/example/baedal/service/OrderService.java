@@ -11,6 +11,7 @@ import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.ItemRepository;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.OrderHasItemRepository;
+import com.example.baedal.repository.OrderRepository.JdbcOrderRepository;
 import com.example.baedal.repository.OrderRepository.OrderRepository;
 import com.querydsl.core.types.Order;
 import com.example.baedal.repository.StoreRepository.StoreRepository;
@@ -35,6 +36,7 @@ public class OrderService {
 
     private final OrderHasItemRepository orderHasItemRepository;
     private final MemberService memberService;
+    private final JdbcOrderRepository jdbcOrderRepository;
 
     @Transactional
     public ResponseDto<?> postOrder(OrderRequestDto requestDto) {
@@ -46,20 +48,29 @@ public class OrderService {
             return ResponseDto.fail("NOT_FOUND", "memberID is not exist");
         }
 
-
         //itemId에 해당하는 내용들을 찾아서 리스트로
         List<Item> itemList = requestDto.getItemId()
                 .stream()
+                //refactor 필읹
                 .map(item -> itemRepository.findByItemId(item).orElse(null))
                 .collect(toList());
+
+        //batchInsert 시킬 list 만들기
+        List<Orders> ordersList = new ArrayList<>();
+
+
         //item을 OrderHasItems에 넣어두기
         Orders order = Orders.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))
                 .store(storeRepository.findByStoreId(requestDto.getStoreId()).orElse(null))
                 .build();
-        //System.out.println("storeName 잘 나오나 보자" + storeRepository.getStoreName(requestDto.getStoreId()));
+        System.out.println("proxy인지 보자" + order.getClass().getName());
 
-        orderRepository.save(order);
+        //ordersList.add(order);
+
+//        orderRepository.save(order);
+        jdbcOrderRepository.saveAll(ordersList);
+        //jdbcOrderRepository.batchInsertOrders(ordersList);
 
 //        List<OrderHasItem> orderHasItems = itemList.stream().map(item -> OrderHasItem.builder()
 //                .orders(order)
