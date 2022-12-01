@@ -147,6 +147,21 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
+    public ResponseDto<?> getAllOrdersWithJPAPaging(Pageable pageable) {
+        Page<Orders> page = orderRepository.findAll(pageable);
+        List<OrderNestedResponseDto> collect = page.stream()
+                //.map(OrderNestedResponseDto::new)
+                .map(OrderNestedResponseDto::new)
+                .collect(toList());
+        List<Object> count = new ArrayList<>();
+        count.add(collect);
+        HashMap<String,Integer> counts = new HashMap<>();
+        counts.put("pages",page.getTotalPages());
+        count.add(counts);
+        return ResponseDto.success(count);
+    }
+
+    @Transactional(readOnly = true)
     public ResponseDto<?> getOneOrder(Long id) {
 
         //comparison1) JPA 사용
@@ -159,5 +174,6 @@ public class OrderService {
 
         return ResponseDto.success(collectOne);
     }
+
 
 }
