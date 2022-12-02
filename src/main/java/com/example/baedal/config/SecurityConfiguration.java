@@ -56,6 +56,7 @@ public class SecurityConfiguration {
                 .antMatchers("/api/members/signup").permitAll()
                 .antMatchers("/api/members/login").permitAll()
                 .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/actuator/**").permitAll()
 
                 .anyRequest().authenticated()
 
