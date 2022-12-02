@@ -21,7 +21,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     public Optional<MemberResponseDto> findByMemberIdCustom(Long id){
 
         return Optional.ofNullable(queryFactory
-                .select(new QMemberResponseDto(member.memberId,member.name,member.address))
+                .select(new QMemberResponseDto(member.memberId,member.name,member.nickname,member.address))
                 .from(member)
                 .where(member.memberId.eq(id))
                 .fetchOne());
@@ -31,7 +31,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     @Override
     public List<MemberResponseDto> findIdNameAddress() {
         return queryFactory
-                .select(new QMemberResponseDto(member.memberId,member.name,member.address))
+                .select(new QMemberResponseDto(member.memberId,member.name,member.nickname,member.address))
                 .from(member)
                 .fetch();
     }
