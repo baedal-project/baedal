@@ -1,6 +1,7 @@
 package com.example.baedal.service;
 
 import com.example.baedal.domain.Item;
+import com.example.baedal.domain.Member;
 import com.example.baedal.domain.OrderHasItem;
 import com.example.baedal.domain.Orders;
 import com.example.baedal.dto.request.OrderRequestDto;
@@ -12,7 +13,6 @@ import com.example.baedal.repository.ItemRepository;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.OrderHasItemRepository;
 import com.example.baedal.repository.OrderRepository.OrderRepository;
-import com.querydsl.core.types.Order;
 import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,7 +41,8 @@ public class OrderService {
         if (requestDto.getItemId().size() == 0) {
             return ResponseDto.fail("NEED_OVER_ONE","음식을 하나이상 주문해야합니다.");
         }
-        MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
+        //MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
+        Member member = memberService.isPresentMember(requestDto.getMemberId());
         if(null == member) {
             return ResponseDto.fail("NOT_FOUND", "memberID is not exist");
         }

@@ -1,4 +1,4 @@
-package com.example.baedal.config;
+package com.example.baedal.config.aop;
 
 
 import java.lang.annotation.ElementType;

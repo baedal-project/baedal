@@ -1,10 +1,14 @@
 package com.example.baedal.controller;
 
+import com.example.baedal.dto.request.LoginRequestDto;
 import com.example.baedal.dto.request.MemberRequestDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 @RequiredArgsConstructor
@@ -19,17 +23,27 @@ public class MemberController {
     }
 
     //로그인
-    @PostMapping(value = "/api/members/{memberId}/login")
-    public ResponseDto<?> login(@PathVariable Long memberId){
-        System.out.println("memberId 잘 나오나 보자" + memberId);
-        return memberService.login(memberId);
+    @PostMapping(value = "/api/members/login")
+    public ResponseDto<?> login(@RequestBody LoginRequestDto requestDto,
+                                HttpServletResponse response){
+        return memberService.login(requestDto, response);
     }
+
+    //멤버 전체 조회
     @GetMapping (value = "/api/members")
     public ResponseDto<?> getAllMember() {
         return memberService.getAllMember();
     }
+
+    //멤버 상세 조회
     @GetMapping (value = "/api/members/{id}")
     public ResponseDto<?> getMember(@PathVariable Long id) {
         return memberService.getOneMember(id);
+    }
+
+    // 로그아웃
+    @PostMapping("/api/members/logout")
+    public ResponseDto<?> logout(HttpServletRequest request) {
+        return memberService.logout(request);
     }
 }

@@ -1,11 +1,9 @@
 package com.example.baedal.controller;
 
-import com.example.baedal.config.LogExecutionTime;
 import com.example.baedal.dto.request.OrderRequestDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.BatchSize;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;

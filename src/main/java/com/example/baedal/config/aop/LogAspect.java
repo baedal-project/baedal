@@ -1,4 +1,4 @@
-package com.example.baedal.config;
+package com.example.baedal.config.aop;
 
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,7 +17,7 @@ public class LogAspect {
 
     Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
-    @Around("@annotation(com.example.baedal.config.LogExecutionTime)")
+    @Around("@annotation(com.example.baedal.config.aop.LogExecutionTime)")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable{
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

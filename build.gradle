@@ -36,10 +36,12 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 
-//    implementation 'org.springframework.boot:spring-boot-gradle-plugin:2.7.5'
-//    implementation 'org.springframework.boot:spring-boot-loader-tools:2.7.5'
-//    implementation 'org.apache.commons:commons-compress:1.21'
-//    implementation 'org.springframework:spring-core:5.3.23'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+//     JWT
+    compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
     // QueryDSL
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"

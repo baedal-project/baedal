@@ -2,6 +2,7 @@ package com.example.baedal.service;
 
 
 import com.example.baedal.domain.Likes;
+import com.example.baedal.domain.Member;
 import com.example.baedal.domain.Store;
 import com.example.baedal.dto.request.LikeRequestDto;
 import com.example.baedal.dto.response.MemberResponseDto;
@@ -35,7 +36,8 @@ public class LikeService {
 
     @Transactional
     public ResponseDto<?> postLike(LikeRequestDto requestDto) {
-        MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
+        //MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
+        Member member = memberService.isPresentMember(requestDto.getMemberId());
         if(null == member) {
             return ResponseDto.fail("NOT_FOUND","memberId is not exist");
         }

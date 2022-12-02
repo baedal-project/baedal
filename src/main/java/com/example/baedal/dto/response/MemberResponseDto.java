@@ -15,14 +15,16 @@ import java.time.LocalDateTime;
 public class MemberResponseDto {
     private Long Id;
     private String name;
+    private String nickname;
     private String address;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
     @QueryProjection
-    public MemberResponseDto(Long Id, String name, String address){
+    public MemberResponseDto(Long Id, String name, String nickname, String address){
         this.Id = Id;
         this.name = name;
+        this.nickname = nickname;
         this.address = address;
     }
 }
