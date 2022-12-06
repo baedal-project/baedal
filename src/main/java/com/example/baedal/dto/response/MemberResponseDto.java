@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Builder
 @Getter
@@ -27,4 +30,5 @@ public class MemberResponseDto {
         this.nickname = nickname;
         this.address = address;
     }
+
 }
