@@ -1,5 +1,7 @@
 package com.example.baedal.domain;
 
+import com.example.baedal.error.CustomException;
+import com.example.baedal.error.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -21,8 +23,8 @@ public class Item extends Timestamped{
     @Column(nullable = false)
     private String name;
 
-//    @Column(nullable = false)
-//    private int amount;
+    @Column(nullable = false)
+    private int amount;
 
     @Column(nullable = false)
     private int price;
@@ -41,5 +43,15 @@ public class Item extends Timestamped{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="store_id", nullable = true)
     private Store store;
+
+    public Integer changeStock(int amount){
+        //case1) this.amount < amount
+        if (this.amount < amount){
+            throw new CustomException(ErrorCode.OUT_OF_STOCK);
+        }else{
+            this.amount -= amount;  //stock 감소
+        }
+        return this.amount;
+    }
 
 }
