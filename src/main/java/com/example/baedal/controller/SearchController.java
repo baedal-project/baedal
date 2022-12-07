@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequiredArgsConstructor
 public class SearchController {
@@ -29,8 +31,9 @@ public class SearchController {
     * v1) DB like 기능 사용*/
     @PostMapping(value = "/api/v1/search")
     public ResponseDto<?> postOrderV1(@RequestBody SearchRequestDto requestDto,
-                                      @PageableDefault(page = 0, size = 10) Pageable pageable) {
-        return searchService.searchV1(requestDto,pageable);
+                                      @PageableDefault(page = 0, size = 10) Pageable pageable,
+                                      HttpServletRequest request) {
+        return searchService.searchV1(requestDto,pageable,request);
     }
 
     /*
@@ -38,8 +41,9 @@ public class SearchController {
      * v2) DB full-text search 기능 사용*/
     @PostMapping(value = "/api/v2/search")
     public ResponseDto<?> postOrderV2(@RequestBody SearchRequestDto requestDto,
-                                      @PageableDefault(page = 0, size = 10) Pageable pageable) {
-        return searchService.searchV2(requestDto,pageable);
+                                      @PageableDefault(page = 0, size = 10) Pageable pageable,
+                                      HttpServletRequest request) {
+        return searchService.searchV2(requestDto,pageable,request);
     }
 
 

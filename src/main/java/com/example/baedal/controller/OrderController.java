@@ -26,8 +26,8 @@ public class OrderController {
     //주문 전체조회
     //@LogExecutionTime
     @GetMapping(value = "/api/orders")
-    public ResponseDto<?> getAllOrder() {
-        return orderService.getAllOrder();
+    public ResponseDto<?> getAllOrder(HttpServletRequest request) {
+        return orderService.getAllOrder(request);
     }
 
     //주문 전체 조회 v2
@@ -40,22 +40,24 @@ public class OrderController {
 //    }
 
     @GetMapping(value = "/api/v2/orders")
-    public ResponseDto<?> getAllOrderWithPaging(@PageableDefault(page = 0, size = 10) Pageable pageable) {
-        return orderService.getAllOrderWithPaging(pageable);
+    public ResponseDto<?> getAllOrderWithPaging(@PageableDefault(page = 0, size = 10) Pageable pageable,
+                                                HttpServletRequest request) {
+        return orderService.getAllOrderWithPaging(pageable,request);
     }
 
     //queryDsl 없이 paging 처리
     @GetMapping (value = "api/v3/orders")
-    public ResponseDto<?> getAllStore(@PageableDefault(page = 0, size = 10)Pageable pageable) {
-        return orderService.getAllOrdersWithJPAPaging(pageable);
+    public ResponseDto<?> getAllStore(@PageableDefault(page = 0, size = 10)Pageable pageable,
+                                      HttpServletRequest request) {
+        return orderService.getAllOrdersWithJPAPaging(pageable,request);
     }
 
     //주문 상세 조회
     //@LogExecutionTime
     @GetMapping(value = "/api/orders/{orderId}")
-    public ResponseDto<?> getOrder(@PathVariable Long orderId){
+    public ResponseDto<?> getOneOrder(@PathVariable Long orderId,HttpServletRequest request) {
 
-        return orderService.getOneOrder(orderId);
+        return orderService.getOneOrder(orderId,request);
     }
 
 }

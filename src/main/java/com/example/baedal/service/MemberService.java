@@ -29,7 +29,7 @@ public class MemberService {
     @Transactional
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
 
-        //signup duplication check
+        //case1) signup duplication check
         memberRepository.findByNickname(requestDto.getNickname()).ifPresent(member -> {
             throw new CustomException(ErrorCode.ALREADY_SAVED_NICKNAME);
         });
@@ -103,6 +103,21 @@ public class MemberService {
         response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
     }
 
+    // 로그아웃
+    public ResponseDto<?> logout(HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
+        Member member = tokenProvider.getMemberFromAuthentication();
+
+        if (null == member) {
+            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        return tokenProvider.deleteRefreshToken(member);
+    }
+
+    //============================admin 만들지 않았으므로 팀원들이 정보 check 하는 용도로 사용================================
     @Transactional(readOnly = true)
     public ResponseDto<?> getAllMember() {
         //return ResponseDto.success(memberRepository.findAll());
@@ -138,24 +153,10 @@ public class MemberService {
 
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Member isPresentMember(Long id) {
          return memberRepository.findByMemberId(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
-    }
-
-    // 로그아웃
-    public ResponseDto<?> logout(HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
-            throw new CustomException(ErrorCode.INVALID_TOKEN);
-        }
-        Member member = tokenProvider.getMemberFromAuthentication();
-
-        if (null == member) {
-            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-
-        return tokenProvider.deleteRefreshToken(member);
     }
 }
