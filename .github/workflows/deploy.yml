@@ -8,7 +8,13 @@ permissions:
   contents: read
 
 jobs:
+  test:
+    uses: ./.github/workflows/Gradle_Test.yml
+    secrets:
+      APPLICATION_YML_TEST: ${{ secrets.APPLICATION_YML_TEST }}
+      
   build:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
