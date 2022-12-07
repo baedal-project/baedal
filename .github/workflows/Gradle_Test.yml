@@ -1,11 +1,15 @@
-name: PR Test
+name: Gradle Test
  
 on:
   pull_request:
     branches: [ "main" ]
+  workflow_call:
+    secrets:
+      APPLICATION_YML_TEST:
+        required: true
  
 jobs:
-  prtest:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,6 +19,17 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
+          
+        ## 2) Gradle Cachw 적용
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       ## git ignore에 등록된 application.yml 파일 생성해주기
       - name: make ENV
