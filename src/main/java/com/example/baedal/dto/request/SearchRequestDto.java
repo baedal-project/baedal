@@ -10,6 +10,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchRequestDto {
-    private String keyword;
+//    private String keyword;
+//    private Long memberId;
+
+    /*v1) DB like로 search*/
     private Long memberId;
 }
+
+
