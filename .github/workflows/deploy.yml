@@ -65,7 +65,9 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/baedal:latest
             ghcr.io/${{ github.repository_owner }}/baedal:${{ github.sha }}
-  deploy:
+            
+  deploy-dev:
+    name: Deploy(Dev)
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -79,4 +81,21 @@ jobs:
           password: ${{ secrets.DEV_SSH_PASSWD }}
           script: |
             docker pull ghcr.io/baedal-project/baedal
-            docker-compose up -d
+            docker-compose up -d Baedal_Dev
+  deploy:
+    name: Deploy(Production)
+    needs: [build, deploy-dev]
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+        ## 6) Docker Hub에 Push한 이미지를 리눅스 서버에 받아와서 run
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_HOST_ADDRESS }}
+          port: ${{ secrets.DEV_SSH_PORT }}
+          username: ${{ secrets.DEV_SSH_USERNAME }}
+          password: ${{ secrets.DEV_SSH_PASSWD }}
+          script: |
+            docker pull ghcr.io/baedal-project/baedal
+            docker-compose up -d Baedal
