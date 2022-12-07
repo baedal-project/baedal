@@ -1,11 +1,11 @@
-name: Dev PR Test
+name: PR Test
  
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
  
 jobs:
-  pr_test:
+  prtest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,7 +16,7 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      ## git ignore에 등록된 application.properties 파일 생성해주기
+      ## git ignore에 등록된 application.yml 파일 생성해주기
       - name: make ENV
         run: |
           mkdir src/test/resources
