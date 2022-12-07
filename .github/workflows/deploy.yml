@@ -21,8 +21,7 @@ jobs:
       - name: make ENV
         run: |
           mkdir src/main/resources
-          cd ./src/main/resources
-          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+          echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
         shell: bash
 
         ## 2) Gradle Cachw 적용
@@ -40,7 +39,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
         ## 4) 깃허브 레지스트리 사용을 위한 로그인
       - name: Login to GitHub Container Registry
