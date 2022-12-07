@@ -100,6 +100,12 @@ public class OrderService {
                 .amount(amount)
                 .build();
         orderHasItemRepository.save(item1);
+
+        //stock update
+        //System.out.println("previous amount :" + item.getAmount());
+        //Integer stock = item.changeStock(amount);
+        item.changeStock(amount);
+        //System.out.println("stock : " + stock);
     }
 
         return ResponseDto.success(
