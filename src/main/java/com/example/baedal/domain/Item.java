@@ -38,9 +38,8 @@ public class Item extends Timestamped{
     )
     private List<OrderHasItem> orderHasItems = new ArrayList<>();
 
-    //@JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="store_Id", nullable = true)
+    @JoinColumn(name="store_id", nullable = true)
     private Store store;
 
 }

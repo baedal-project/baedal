@@ -1,6 +1,5 @@
 package com.example.baedal.service;
 
-import com.example.baedal.domain.Store;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +18,13 @@ import java.util.Optional;
 public class StoreService {
     private final StoreRepository storeRepository;
 
-
     @Transactional
     @Cacheable(value = "test")
     public ResponseDto<?> getAllStore(Pageable pageable) {
 
         return ResponseDto.success(storeRepository.findAll(pageable));
     }
+
+
+
 }

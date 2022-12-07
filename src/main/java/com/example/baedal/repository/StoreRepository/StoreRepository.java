@@ -12,7 +12,6 @@ import java.util.Optional;
 public interface StoreRepository extends JpaRepository<Store, Long>, StoreRepositoryCustom {
     List<Store> findAll();
 
-
     @Modifying //cache clear
     @Query(value = "UPDATE Store s SET s.avgStar = :finalStar WHERE s.storeId = :id")
     void updateAvgStar(@Param("finalStar") double finalStar, @Param("id") Long id);

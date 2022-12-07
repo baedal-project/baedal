@@ -57,7 +57,7 @@ public class CustomExceptionHandler extends RuntimeException {
                 .body(error);
     }
 
-    //Element 없을 떼
+    //Element 없을 때
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Object> handleNoSuchElementException(NoSuchElementException ex){
         RestApiException error = new RestApiException(ErrorCode.NOT_VALUE_AT.name(),ErrorCode.NOT_VALUE_AT.getMessage());

@@ -1,7 +1,7 @@
 package com.example.baedal.service;
 
 import com.example.baedal.dto.request.MemberRequestDto;
-import com.example.baedal.repository.ItemRepository;
+import com.example.baedal.repository.ItemRepository.ItemRepository;
 import com.example.baedal.repository.LikeRepository;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.OrderHasItemRepository;
@@ -9,7 +9,6 @@ import com.example.baedal.repository.OrderRepository.OrderRepository;
 import com.example.baedal.repository.RefreshTokenRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
