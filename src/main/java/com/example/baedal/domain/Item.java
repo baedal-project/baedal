@@ -47,8 +47,10 @@ public class Item extends Timestamped{
     public Integer changeStock(int amount){
         //case1) this.amount < amount
         if (this.amount < amount){
+            throw new CustomException(ErrorCode.NOT_ENOUGH_STOCK);
+        } else if(this.amount == amount){
             throw new CustomException(ErrorCode.OUT_OF_STOCK);
-        }else{
+        } else{
             this.amount -= amount;  //stock 감소
         }
         return this.amount;

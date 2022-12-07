@@ -27,6 +27,7 @@ public enum ErrorCode {
     STORE_NOT_FOUND(404,"가게를 찾을 수 없습니다"),
     ITEM_NOT_FOUND(404,"메뉴를 찾을 수 없습니다"),
     OUT_OF_STOCK(404,"재고가 없습니다"),
+    NOT_ENOUGH_STOCK(404,"재고가 부족합니다"),
     NEED_OVER_ONE(404,"주문 수량은 1개 이상이어야 합니다"),
 
     //==============================500 INTERNAL SERVER ERROR========================
