@@ -4,6 +4,8 @@ import com.example.baedal.domain.Member;
 import com.example.baedal.domain.RefreshToken;
 import com.example.baedal.dto.TokenDto;
 import com.example.baedal.dto.response.ResponseDto;
+import com.example.baedal.error.CustomException;
+import com.example.baedal.error.ErrorCode;
 import com.example.baedal.jwt.user.UserDetailsImpl;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.RefreshTokenRepository;
@@ -19,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
@@ -90,18 +93,6 @@ public class TokenProvider {
     return new UsernamePasswordAuthenticationToken(principal, "", null);
   }
 
-  public Authentication getAuthenticationByRefreshToken(String refreshToken) {
-    // 서버에 해당 리프레시 토큰이 존재하는지 확인
-    RefreshToken refreshTokenObj = refreshTokenRepository.findByTokenValue(refreshToken)
-            .orElseThrow(() -> new IllegalArgumentException("서버에 존재하지 않는 리프레시 토큰입니다."));
-    // Member 객체 가져오기
-    Member member = memberRepository.findById(refreshTokenObj.getMember().getMemberId()).orElseThrow();
-    // UserDetails 로 변환
-    UserDetailsImpl principal = new UserDetailsImpl(member);
-    // Authentication 객체 생성
-    return new UsernamePasswordAuthenticationToken(principal, "", null);
-  }
-
   public boolean validateToken(String token) {
     try {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -146,11 +137,25 @@ public class TokenProvider {
   @Transactional
   public ResponseDto<?> deleteRefreshToken(Member member) {
     RefreshToken refreshToken = isPresentRefreshToken(member);
+
     if (null == refreshToken) {
-      return ResponseDto.fail("TOKEN_NOT_FOUND", "존재하지 않는 Token 입니다.");
+      throw new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
     }
 
     refreshTokenRepository.delete(refreshToken);
     return ResponseDto.success("로그아웃 완료");
+  }
+
+  /*token validation check*/
+  public void tokenValidationCheck(HttpServletRequest request) {
+    //case1) Refresh-Token이 Null일 때
+    if (null == request.getHeader("Refresh-Token")) {
+      throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+    }
+
+    //case2) Authorization이 Null일 때
+    if (null == request.getHeader("Authorization")) {
+      throw new CustomException(ErrorCode.INVALID_TOKEN);
+    }
   }
 }

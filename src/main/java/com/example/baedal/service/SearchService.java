@@ -5,6 +5,7 @@ import com.example.baedal.domain.Store;
 import com.example.baedal.dto.request.SearchRequestDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.error.ErrorCode;
+import com.example.baedal.jwt.TokenProvider;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -20,6 +22,7 @@ public class SearchService {
 
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
     /*problem:
     member 주소와 상점의 주소가 정확시 일치해야
@@ -39,8 +42,12 @@ public class SearchService {
      * cons) table full scan 실행
      * v1) DB like 기능 사용*/
     @Transactional
-    public ResponseDto<?> searchV1(SearchRequestDto requestDto, Pageable pageable) {
-        //memberId로 member 찾기
+    public ResponseDto<?> searchV1(SearchRequestDto requestDto, Pageable pageable, HttpServletRequest request) {
+
+        //case1)case2) token validity check
+        tokenProvider.tokenValidationCheck(request);
+
+        //case3) Member 존재하지 않을 때
         Member member = memberRepository.findByMemberId(requestDto.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
@@ -48,7 +55,6 @@ public class SearchService {
         String[] address = member.getAddress().split(" ");
         //System.out.println("주소 시까지 잘 나오나 보자" + address[0]);
         List<Store> stores = storeRepository.findByAddressV1(address[0],pageable);
-
         return ResponseDto.success(stores);
     }
 
@@ -61,8 +67,12 @@ public class SearchService {
      * pros) table full scan을 하지 않아도 되므로 성능이 좋음
      * v2) DB full text search 사용 */
     @Transactional
-    public ResponseDto<?> searchV2(SearchRequestDto requestDto, Pageable pageable) {
-        //memberId로 member 찾기
+    public ResponseDto<?> searchV2(SearchRequestDto requestDto, Pageable pageable,HttpServletRequest request) {
+
+        //case1)case2) token validity check
+        tokenProvider.tokenValidationCheck(request);
+
+        //case3) member 존재하지 않을 때
         Member member = memberRepository.findByMemberId(requestDto.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
@@ -74,5 +84,6 @@ public class SearchService {
 
         return ResponseDto.success(stores);
     }
+
 
 }

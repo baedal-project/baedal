@@ -9,6 +9,7 @@ import com.example.baedal.dto.response.OrderResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.error.CustomException;
 import com.example.baedal.error.ErrorCode;
+import com.example.baedal.jwt.TokenProvider;
 import com.example.baedal.repository.ItemRepository.ItemRepository;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.OrderHasItemRepository;
@@ -36,19 +37,13 @@ public class OrderService {
 
     private final OrderHasItemRepository orderHasItemRepository;
     private final MemberService memberService;
+    private final TokenProvider tokenProvider;
 
     @Transactional
     public ResponseDto<?> postOrder(OrderRequestDto requestDto, HttpServletRequest request) {
 
-        //case1) Refresh-Token이 Null일 때
-        if (null == request.getHeader("Refresh-Token")) {
-            throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
-        }
-
-        //case2) Authorization이 Null일 때
-        if (null == request.getHeader("Authorization")) {
-            throw new CustomException(ErrorCode.INVALID_TOKEN);
-        }
+        //case1)case2)token validity check
+        tokenProvider.tokenValidationCheck(request);
 
         //case3)
         //MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
@@ -69,14 +64,10 @@ public class OrderService {
             }
         });
 
-        //case6)Item 주문 수량이 별로 없을 때
+        //case6)Item 주문 수량이 0일 때
         if (requestDto.getItemId().size() == 0) {
-            throw new CustomException(ErrorCode.OUT_OF_STOCK);
+            throw new CustomException(ErrorCode.NEED_OVER_ONE);
         }
-        //case6)
-        //MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
-        memberService.isPresentMember(requestDto.getMemberId());
-
 
         //itemId에 해당하는 내용들을 찾아서 리스트로
         List<Item> itemList = requestDto.getItemId()
@@ -124,7 +115,11 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<?> getAllOrder() {
+    public ResponseDto<?> getAllOrder(HttpServletRequest request) {
+
+        //case1)case2)token validity check
+        tokenProvider.tokenValidationCheck(request);
+
         //memberId, storeId, amount, item
         //return ResponseDto.success(orderHasItemRepository.findAll().stream().map(v->v.getOrders()));
         //return ResponseDto.success(orderHasItemRepository.findAll());
@@ -162,7 +157,11 @@ public class OrderService {
         -> stream 돌 때 orderhasitems 수만큼 select query
             + orderhasitems안에 Item수만큼 select query*/
     @Transactional
-    public ResponseDto<?> getAllOrderWithPaging(Pageable pageable){
+    public ResponseDto<?> getAllOrderWithPaging(Pageable pageable, HttpServletRequest request) {
+
+        //case1)case2)token validity check
+        tokenProvider.tokenValidationCheck(request);
+
         Page<Orders> orderWithPaging = orderRepository.getAllOrderWithPaging(pageable);
         List<OrderNestedResponseDto> collect = orderWithPaging.stream()
                 //.map(OrderNestedResponseDto::new)
@@ -178,7 +177,11 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<?> getAllOrdersWithJPAPaging(Pageable pageable) {
+    public ResponseDto<?> getAllOrdersWithJPAPaging(Pageable pageable,HttpServletRequest request) {
+
+        //case1)case2)token validity check
+        tokenProvider.tokenValidationCheck(request);
+
         Page<Orders> page = orderRepository.findAll(pageable);
         List<OrderNestedResponseDto> collect = page.stream()
                 //.map(OrderNestedResponseDto::new)
@@ -193,7 +196,10 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<?> getOneOrder(Long id) {
+    public ResponseDto<?> getOneOrder(Long id, HttpServletRequest request) {
+
+        //case1)case2)token validity check
+        tokenProvider.tokenValidationCheck(request);
 
         //comparison1) JPA 사용
         //return ResponseDto.success(orderRepository.getOneOrder(id));
