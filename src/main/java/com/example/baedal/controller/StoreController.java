@@ -17,4 +17,8 @@ public class StoreController {
     public ResponseDto<?> getAllStore(@PageableDefault(size = 10)Pageable pageable) {
         return storeService.getAllStore(pageable);
     }
+
+    /*사용자 위치기반으로 주소 건네주기
+    * '시'단위까지 맞춰서 같으면 건네주기*/
+
 }

@@ -1,15 +1,15 @@
 package com.example.baedal.service;
 
 import com.example.baedal.domain.Item;
-import com.example.baedal.domain.Member;
 import com.example.baedal.domain.OrderHasItem;
 import com.example.baedal.domain.Orders;
 import com.example.baedal.dto.request.OrderRequestDto;
-import com.example.baedal.dto.response.MemberResponseDto;
 import com.example.baedal.dto.response.OrderNestedResponseDto;
 import com.example.baedal.dto.response.OrderResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
-import com.example.baedal.repository.ItemRepository;
+import com.example.baedal.error.CustomException;
+import com.example.baedal.error.ErrorCode;
+import com.example.baedal.repository.ItemRepository.ItemRepository;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.OrderHasItemRepository;
 import com.example.baedal.repository.OrderRepository.OrderRepository;
@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import static java.util.stream.Collectors.*;
@@ -37,15 +38,44 @@ public class OrderService {
     private final MemberService memberService;
 
     @Transactional
-    public ResponseDto<?> postOrder(OrderRequestDto requestDto) {
-        if (requestDto.getItemId().size() == 0) {
-            return ResponseDto.fail("NEED_OVER_ONE","음식을 하나이상 주문해야합니다.");
+    public ResponseDto<?> postOrder(OrderRequestDto requestDto, HttpServletRequest request) {
+
+        //case1) Refresh-Token이 Null일 때
+        if (null == request.getHeader("Refresh-Token")) {
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
+
+        //case2) Authorization이 Null일 때
+        if (null == request.getHeader("Authorization")) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
+
+        //case3)
         //MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
-        Member member = memberService.isPresentMember(requestDto.getMemberId());
-        if(null == member) {
-            return ResponseDto.fail("NOT_FOUND", "memberID is not exist");
+        memberService.isPresentMember(requestDto.getMemberId());
+//                if(null == member) {
+//            return ResponseDto.fail("NOT_FOUND", "memberID is not exist");
+//        }
+
+        //case4)StoreId에 해당하는 가게가 존재하지 않을 때
+        if (!storeRepository.existsById(requestDto.getStoreId())) {
+            throw new CustomException(ErrorCode.STORE_NOT_FOUND);
         }
+
+        //case5)ItemId에 해당하는 Item이 존재하지 않을 때
+        requestDto.getItemId().stream().forEach(itemId -> {
+            if (!itemRepository.existsById(itemId)) {
+                throw new CustomException(ErrorCode.ITEM_NOT_FOUND);
+            }
+        });
+
+        //case6)Item 주문 수량이 별로 없을 때
+        if (requestDto.getItemId().size() == 0) {
+            throw new CustomException(ErrorCode.OUT_OF_STOCK);
+        }
+        //case6)
+        //MemberResponseDto member = memberService.isPresentMember(requestDto.getMemberId());
+        memberService.isPresentMember(requestDto.getMemberId());
 
 
         //itemId에 해당하는 내용들을 찾아서 리스트로

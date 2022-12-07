@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequiredArgsConstructor
 public class OrderController {
@@ -17,8 +19,8 @@ public class OrderController {
     //주문
     //@LogExecutionTime
     @PostMapping(value = "/api/orders")
-    public ResponseDto<?> postOrder(@RequestBody OrderRequestDto requestDto) {
-        return orderService.postOrder(requestDto);
+    public ResponseDto<?> postOrder(@RequestBody OrderRequestDto requestDto, HttpServletRequest request) {
+        return orderService.postOrder(requestDto, request);
     }
 
     //주문 전체조회
@@ -36,6 +38,7 @@ public class OrderController {
 //            ) {
 //        return orderService.getAllOrderWithPaging(pageable);
 //    }
+
     @GetMapping(value = "/api/v2/orders")
     public ResponseDto<?> getAllOrderWithPaging(@PageableDefault(page = 0, size = 10) Pageable pageable) {
         return orderService.getAllOrderWithPaging(pageable);

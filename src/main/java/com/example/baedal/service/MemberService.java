@@ -6,6 +6,8 @@ import com.example.baedal.dto.request.LoginRequestDto;
 import com.example.baedal.dto.request.MemberRequestDto;
 import com.example.baedal.dto.response.MemberResponseDto;
 import com.example.baedal.dto.response.ResponseDto;
+import com.example.baedal.error.CustomException;
+import com.example.baedal.error.ErrorCode;
 import com.example.baedal.jwt.TokenProvider;
 import com.example.baedal.repository.MemberRepository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -29,9 +30,9 @@ public class MemberService {
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
 
         //signup duplication check
-        if (memberRepository.existsByNickname(requestDto.getNickname())) {
-            throw new IllegalArgumentException("중복된 닉네임입니다.");
-        }
+        memberRepository.findByNickname(requestDto.getNickname()).ifPresent(member -> {
+            throw new CustomException(ErrorCode.ALREADY_SAVED_NICKNAME);
+        });
 
         //encode password
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
@@ -60,17 +61,23 @@ public class MemberService {
     @Transactional
     public ResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
 
-        // unique nickname으로 validation
-        Member member = memberRepository.findByNickname(requestDto.getNickname())
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 유저입니다."));
-
-        if (null == member){
-            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 유저입니다.");
+        // case1) login 입력하지 않았을 경우 한번 더 걸러주기
+        if (requestDto.getNickname() == null) {
+            throw new CustomException(ErrorCode.NICKNAME_EMPTY);
         }
 
-        //DB password check
-        if (!member.validatePassword(passwordEncoder, requestDto.getPassword())) {
-            return ResponseDto.fail("INVALID_PASSWORD", "비밀번호가 올바르지 않습니다.");
+        // case2) password 입력하지 않았을 경우 한번 더 걸러주기
+        if (requestDto.getPassword() == null) {
+            throw new CustomException(ErrorCode.PASSWORD_EMPTY);
+        }
+
+        // case3) nickname에 해당하는 member 존재하는지 check
+        Member member = memberRepository.findByNickname(requestDto.getNickname())
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NICKNAME_MISMATCH.getMessage()));
+
+        // case4) DB password check
+        if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
         }
 
         //Access-Token, Refresh-Token 발급한 후 FE에 ServletResponse로 전달
@@ -107,9 +114,13 @@ public class MemberService {
     public ResponseDto<?> getOneMember(Long id) {
         Member member =isPresentMember(id);
         //MemberResponseDto member = isPresentMember(id);
-        if (null == member) {
-            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 유저 id 입니다.");
-        }
+//        if (null == member) {
+//            return ResponseDto.fail(ErrorCode.MEMBER_NOT_FOUND.name(),
+//                                    ErrorCode.MEMBER_NOT_FOUND.getMessage());
+//        }
+
+//        memberRepository.findByMemberId(id)
+//                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
         //before refactoring
 //        return ResponseDto.success(
@@ -129,25 +140,20 @@ public class MemberService {
 
     @Transactional
     public Member isPresentMember(Long id) {
-        Optional<Member> optionalMember = memberRepository.findByMemberId(id);
-        return optionalMember.orElse(null);
+         return memberRepository.findByMemberId(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+
     }
-//    @Transactional
-//    public MemberResponseDto isPresentMember(Long id) {
-//        Optional<MemberResponseDto> optionalMember = memberRepository.findByMemberIdCustom(id);
-//        return optionalMember.orElse(null);
-//
-//    }
 
     // 로그아웃
     public ResponseDto<?> logout(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
-            return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
         Member member = tokenProvider.getMemberFromAuthentication();
 
         if (null == member) {
-            return ResponseDto.fail("MEMBER_NOT_FOUND", "사용자를 찾을 수 없습니다.");
+            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
         return tokenProvider.deleteRefreshToken(member);
