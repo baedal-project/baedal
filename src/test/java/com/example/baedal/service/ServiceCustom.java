@@ -64,7 +64,7 @@ public class ServiceCustom{
     @Autowired
     TokenProvider tokenProvider;
 
-//    @BeforeEach
+    @BeforeEach
     public void beforeEach() {
         //FK check 후 삭제
         orderHasItemRepository.deleteAll();
