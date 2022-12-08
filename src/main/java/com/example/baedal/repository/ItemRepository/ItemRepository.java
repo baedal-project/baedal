@@ -14,6 +14,7 @@ public interface ItemRepository extends JpaRepository<Item, Long>, ItemRepositor
     Optional<Item> findByItemId(Long id);
 
     //item Entity에서 amount에 해당하는 값만 가져오기
+
     @Query(value = "SELECT i.amount FROM Item i WHERE i.itemId = :id")
     Long findAmountByItemId(@Param("id") Long id);
 
