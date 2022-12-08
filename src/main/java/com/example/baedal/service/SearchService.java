@@ -67,7 +67,7 @@ public class SearchService {
      * pros) table full scan을 하지 않아도 되므로 성능이 좋음
      * v2) DB full text search 사용 */
     @Transactional
-    public ResponseDto<?> searchV2(SearchRequestDto requestDto, Pageable pageable,HttpServletRequest request) {
+    public ResponseDto<?> searchV2(SearchRequestDto requestDto, Pageable pageable, HttpServletRequest request) {
 
         //case1)case2) token validity check
         tokenProvider.tokenValidationCheck(request);

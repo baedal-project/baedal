@@ -39,7 +39,10 @@ public class OrderService {
     private final MemberService memberService;
     private final TokenProvider tokenProvider;
 
-    @Transactional
+    /*@Transactional annotation은 기본적으로 Checked Exception에 대해
+    rollback 시키지 않도록 설계되어 있음.
+    * */
+    @Transactional(rollbackFor = {CustomException.class})
     public ResponseDto<?> postOrder(OrderRequestDto requestDto, HttpServletRequest request) {
 
         //case1)case2)token validity check
@@ -79,7 +82,6 @@ public class OrderService {
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null))
                 .store(storeRepository.findByStoreId(requestDto.getStoreId()).orElse(null))
                 .build();
-        //System.out.println("storeName 잘 나오나 보자" + storeRepository.getStoreName(requestDto.getStoreId()));
 
         orderRepository.save(order);
 
