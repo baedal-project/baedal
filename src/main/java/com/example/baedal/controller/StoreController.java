@@ -6,7 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,7 +23,7 @@ public class StoreController {
 
     @GetMapping (value = "api/stores/{memberId}")
     public ResponseDto<?> getMemberStore(@PathVariable Long memberId, HttpServletRequest request) {
-        return storeService.getMemberStore(memberid, request);
+        return storeService.getMemberStore(memberId, request);
     }
 
 

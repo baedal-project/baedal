@@ -1,6 +1,11 @@
 package com.example.baedal.service;
 
+import com.example.baedal.domain.Member;
+import com.example.baedal.domain.Store;
 import com.example.baedal.dto.response.ResponseDto;
+import com.example.baedal.error.ErrorCode;
+import com.example.baedal.jwt.TokenProvider;
+import com.example.baedal.repository.MemberRepository.MemberRepository;
 import com.example.baedal.repository.StoreRepository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -10,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +24,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StoreService {
     private final StoreRepository storeRepository;
+    private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
     @Transactional
     @Cacheable(value = "test")
@@ -27,7 +36,7 @@ public class StoreService {
 
     @Transactional
     @Cacheable(value = "test")
-    public ResponseDto<?> getMemberStore(@PathVariable Long memberId, HttpServletRequest request) {
+    public ResponseDto<?> getMemberStore( Long memberId, HttpServletRequest request) {
 
         //case1)case2) token validity check
         tokenProvider.tokenValidationCheck(request);
