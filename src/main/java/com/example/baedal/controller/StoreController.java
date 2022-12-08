@@ -18,6 +18,12 @@ public class StoreController {
         return storeService.getAllStore(pageable);
     }
 
+    @GetMapping (value = "api/stores/{memberId}")
+    public ResponseDto<?> getMemberStore(@PathVariable Long memberId, HttpServletRequest request) {
+        return storeService.getMemberStore(memberid, request);
+    }
+
+
     /*사용자 위치기반으로 주소 건네주기
     * '시'단위까지 맞춰서 같으면 건네주기*/
 

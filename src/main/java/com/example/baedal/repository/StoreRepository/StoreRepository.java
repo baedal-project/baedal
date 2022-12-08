@@ -30,4 +30,10 @@ public interface StoreRepository extends JpaRepository<Store, Long>, StoreReposi
     @Query(value = "SELECT * FROM Store s WHERE MATCH(s.address) AGAINST((?1) IN NATURAL LANGUAGE MODE)",
             nativeQuery = true)
     List<Store> findByAddressV2(@Param("address") String address, Pageable pageable);
+
+    /*v2) DB indexing/full-text search 사용 페이징X*/
+    /*alter table store add fulltext (address); MySQL에서 설정 필요*/
+    @Query(value = "SELECT * FROM Store s WHERE MATCH(s.address) AGAINST((?1) IN NATURAL LANGUAGE MODE)",
+            nativeQuery = true)
+    List<Store> findByAddressV2(@Param("address") String address);
 }

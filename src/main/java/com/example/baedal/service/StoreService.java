@@ -25,6 +25,26 @@ public class StoreService {
         return ResponseDto.success(storeRepository.findAll(pageable));
     }
 
+    @Transactional
+    @Cacheable(value = "test")
+    public ResponseDto<?> getMemberStore(@PathVariable Long memberId, HttpServletRequest request) {
+
+        //case1)case2) token validity check
+        tokenProvider.tokenValidationCheck(request);
+
+        //case3) member 존재하지 않을 때
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+
+        //member의 address에서 '시'단위까지만 추출
+        String[] address = member.getAddress().split(" ");
+
+        //DB indexing 후 full text search 이용해서 해당 Store 반환
+        List<Store> stores = storeRepository.findByAddressV2(address[0]);
+
+        return ResponseDto.success(stores);
+    }
+
 
 
 }
