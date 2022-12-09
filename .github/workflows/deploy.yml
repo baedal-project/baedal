@@ -166,7 +166,7 @@ jobs:
           host: ${{ secrets.CLOUD_HOST_ADDRESS }}
           port: ${{ secrets.CLOUD_SSH_PORT }}
           username: ${{ secrets.CLOUD_SSH_USERNAME }}
-          passphrase: ${{ secrets.CLOUD_SSH_KEY }}
+          key: ${{ secrets.CLOUD_SSH_KEY }}
           script: |
             docker pull ghcr.io/baedal-project/baedal-cloud
             docker-compose up -d Baedal-cloud
