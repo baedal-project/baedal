@@ -155,8 +155,8 @@ jobs:
             
   deploy-cloud:
     name: Deploy(cloud)
-    needs: build-cloud
-    environment: production
+    needs: [deploy-dev, build-cloud]
+    environment: cloud
     runs-on: ubuntu-latest
     steps:
         ## 6) Docker Hub에 Push한 이미지를 리눅스 서버에 받아와서 run
