@@ -18,9 +18,19 @@ public class OrderController {
 
     //주문
     //@LogExecutionTime
-    @PostMapping(value = "/api/orders")
+    @PostMapping(value = "/api/v1/orders")
     public ResponseDto<?> postOrder(@RequestBody OrderRequestDto requestDto, HttpServletRequest request) {
         return orderService.postOrder(requestDto, request);
+    }
+
+    @PostMapping(value = "/api/v2/orders")
+    public ResponseDto<?> postOrderWithPessimisticWrite(@RequestBody OrderRequestDto requestDto, HttpServletRequest request) {
+        return orderService.postOrderWithPessimisticWrite(requestDto, request);
+    }
+
+    @PostMapping(value = "/api/v3/orders")
+    public ResponseDto<?> postOrderWithPessimisticRead(@RequestBody OrderRequestDto requestDto, HttpServletRequest request) {
+        return orderService.postOrderWithPessimisticRead(requestDto, request);
     }
 
     //주문 전체조회
