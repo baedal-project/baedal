@@ -13,7 +13,7 @@ jobs:
     secrets:
       APPLICATION_YML_TEST: ${{ secrets.APPLICATION_YML_TEST }}
       
-  build:
+  build-dev:
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -65,10 +65,63 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/baedal:latest
             ghcr.io/${{ github.repository_owner }}/baedal:${{ github.sha }}
+  
+  build-cloud:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+        ## 1) gitignore에 등록된 application.properties 파일 생성해주기
+      - name: make ENV
+        run: |
+          mkdir src/main/resources
+          echo "${{ secrets.APPLICATION_YML_CLOUD }}" > ./src/main/resources/application.yml
+        shell: bash
+
+        ## 2) Gradle Cachw 적용
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+            
+        ## 3) 스프링 프로젝트 jar 파일 빌드
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: ./gradlew build -x test
+
+        ## 4) 깃허브 레지스트리 사용을 위한 로그인
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.CR_PAT }}
+
+        ## 5) 깃허브 레지스트리에 Docker 빌드 후 이미지 업로드
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/baedal-cloud:latest
+            ghcr.io/${{ github.repository_owner }}/baedal-cloud:${{ github.sha }}
             
   deploy-dev:
     name: Deploy(Dev)
-    needs: build
+    needs: build-dev
     runs-on: ubuntu-latest
     steps:
         ## 6) Docker Hub에 Push한 이미지를 리눅스 서버에 받아와서 run
@@ -84,7 +137,7 @@ jobs:
             docker-compose up -d Baedal_Dev
   deploy:
     name: Deploy(Production)
-    needs: [build, deploy-dev]
+    needs: deploy-dev
     environment: production
     runs-on: ubuntu-latest
     steps:
@@ -99,3 +152,21 @@ jobs:
           script: |
             docker pull ghcr.io/baedal-project/baedal
             docker-compose up -d Baedal
+            
+  deploy-cloud:
+    name: Deploy(cloud)
+    needs: build-cloud
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+        ## 6) Docker Hub에 Push한 이미지를 리눅스 서버에 받아와서 run
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.CLOUD_HOST_ADDRESS }}
+          port: ${{ secrets.CLOUD_SSH_PORT }}
+          username: ${{ secrets.CLOUD_SSH_USERNAME }}
+          passphrase: ${{ secrets.CLOUD_SSH_KEY }}
+          script: |
+            docker pull ghcr.io/baedal-project/baedal-cloud
+            docker-compose up -d Baedal-cloud
