@@ -1,6 +1,8 @@
 package com.example.baedal.service;
 
 import com.example.baedal.domain.Item;
+import com.example.baedal.domain.Member;
+import com.example.baedal.domain.Store;
 import com.example.baedal.dto.request.MemberRequestDto;
 import com.example.baedal.dto.request.OrderRequestDto;
 import com.example.baedal.jwt.TokenProvider;
@@ -15,6 +17,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -64,6 +68,9 @@ public class ServiceCustom{
     @Autowired
     TokenProvider tokenProvider;
 
+    public ServiceCustom() {
+    }
+
     @BeforeEach
     public void beforeEach() {
         //FK check 후 삭제
@@ -88,7 +95,44 @@ public class ServiceCustom{
         memberRepository.deleteAll();
     }
 
+    //create Entity
+    protected Store createStore(String name, String address, String category, Long memberId) {
+        Store store = Store.builder()
+                .name(name)
+                .address(address)
+                .category(category)
+                .member(memberRepository.findByMemberId(memberId).get())
+                .build();
+        return store;
+    }
+
+    protected Item createItem(String name, int amount, int price, String category, Long storeId) {
+            Item item = Item.builder()
+                    .name(name)
+                    .amount(amount)
+                    .store(storeRepository.findByStoreId(storeId).get())
+                    .price(price)
+                    .category(category)
+                    .build();
+
+            return item;
+
+        }
+
+    protected Member createMember(String name, String nickname, String password, String address, String role) {
+        Member member = Member.builder()
+                .name(name)
+                .nickname(nickname)
+                .password(password)
+                .address(address)
+                .role(role)
+                .build();
+        return member;
+    }
+
+    //create Dto
     protected MemberRequestDto createMemberRequestDto(String name, String nickname, String password, String address, String role) {
+
         return MemberRequestDto.builder()
                 .name(name)
                 .nickname(nickname)
@@ -113,21 +157,6 @@ public class ServiceCustom{
                 .memberId(memberId)
                 .build();
     }
-
-    //    @PersistenceContext
-//    EntityManager em;
-
-//    @AfterEach
-//    @DisplayName("auto_increment reset")
-//    public void teardown() {
-//        //DB Reset
-//        this.memberRepository.deleteAll();
-//        this.em
-//            .createNativeQuery("ALTER TABLE member AUTO_INCREMENT=1")
-//            .executeUpdate();
-//
-//    }
-
 
 
 }
