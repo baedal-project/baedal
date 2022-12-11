@@ -15,6 +15,11 @@
 
 <br>
 <br>
+<h2 align="center"><b>🛠 Infra 🛠</b></h3>
+<img src="https://user-images.githubusercontent.com/5901912/206910067-84d7664f-4eca-4d30-bb75-957ffef1f400.png">
+
+<br>
+<br>
 <h2 align="center"><b>🙋 팀원 🙋</b></h3>
 <table align="center">
   <tbody>
