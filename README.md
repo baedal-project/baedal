@@ -16,7 +16,8 @@
 <br>
 <br>
 <h2 align="center"><b>🛠 Infra 🛠</b></h3>
-<img src="https://user-images.githubusercontent.com/5901912/206910256-cd26dbd1-d4dc-404c-8d99-111c22a27d0b.png">
+<img src="https://user-images.githubusercontent.com/5901912/206967206-874e4288-68de-4120-be6f-ab96ffa2a02a.png">
+
 
 <br>
 <br>
