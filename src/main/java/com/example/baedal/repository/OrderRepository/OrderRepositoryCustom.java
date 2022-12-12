@@ -53,4 +53,9 @@ public interface OrderRepositoryCustom {
     //    }
 //    List<Orders> getAllOrderWithPaging(int offset, int limit, Pageable pageable);
     Page<Orders> getAllOrderWithPaging(Pageable pageable);
+
+    //memberId에 해당하는 주문내역 조회
+    Page<Orders> getOrdersByMemberId(Long memberId, Pageable pageable);
+
+    Page<Orders> getOrdersByStoreId(Long storeId, Pageable pageable);
 }

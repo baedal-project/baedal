@@ -2,8 +2,10 @@ package com.example.baedal.service;
 
 import com.example.baedal.config.aop.LogExecutionTime;
 import com.example.baedal.domain.Item;
+import com.example.baedal.domain.Member;
 import com.example.baedal.domain.OrderHasItem;
 import com.example.baedal.domain.Orders;
+import com.example.baedal.dto.request.OrderCheckRequestDto;
 import com.example.baedal.dto.request.OrderRequestDto;
 import com.example.baedal.dto.response.OrderNestedResponseDto;
 import com.example.baedal.dto.response.OrderResponseDto;
@@ -383,8 +385,8 @@ public class OrderService {
         return ResponseDto.success(count);
     }
 
-    @Transactional(readOnly = true)
-    public ResponseDto<?> getAllOrdersWithJPAPaging(Pageable pageable,HttpServletRequest request) {
+    @Transactional(readOnly = true) //for admin
+    public ResponseDto<?> getAllOrdersWithJPAPaging(Pageable pageable, HttpServletRequest request) {
 
         //case1)case2)token validity check
         tokenProvider.tokenValidationCheck(request);
@@ -402,22 +404,57 @@ public class OrderService {
         return ResponseDto.success(count);
     }
 
-    @Transactional(readOnly = true)
-    public ResponseDto<?> getOneOrder(Long id, HttpServletRequest request) {
+    public ResponseDto<?> getAllOrdersByConsumerProducer(Pageable pageable, HttpServletRequest request, OrderCheckRequestDto orderCheckRequestDto) {
 
         //case1)case2)token validity check
         tokenProvider.tokenValidationCheck(request);
 
-        //comparison1) JPA 사용
-        //return ResponseDto.success(orderRepository.getOneOrder(id));
+        //member가 consumer이고 storeId가 null이라면 주문내역 확인
+        Member member = tokenProvider.getMemberFromAuthentication();
+        System.out.println("member role is : " + member.getRole());
+        if (member.getRole().equals("CONSUMER") && orderCheckRequestDto.getStoreId() == null) {
+            Page<Orders> page = orderRepository.getOrdersByMemberId(member.getMemberId(), pageable);
+            List<OrderNestedResponseDto> collect = page.stream()
+                    .map(OrderNestedResponseDto::new)
+                    .collect(toList());
 
-        //comparison2)
-        Orders orders = orderRepository.getOneOrder(id);
-        OrderNestedResponseDto collectOne =
-                new OrderNestedResponseDto(orders);
+            List<Object> count = new ArrayList<>();
+            count.add(collect);
+            HashMap<String,Integer> counts = new HashMap<>();
+            counts.put("pages",page.getTotalPages());
+            count.add(counts);
+            return ResponseDto.success(count);
+        }else if (member.getRole().equals("PRODUCER") && orderCheckRequestDto.getStoreId() != null) {
+            Page<Orders> page = orderRepository.getOrdersByStoreId(orderCheckRequestDto.getStoreId(), pageable);
+            List<OrderNestedResponseDto> collect = page.stream()
+                    .map(OrderNestedResponseDto::new)
+                    .collect(toList());
 
-        return ResponseDto.success(collectOne);
+            List<Object> count = new ArrayList<>();
+            count.add(collect);
+            HashMap<String, Integer> counts = new HashMap<>();
+            counts.put("pages", page.getTotalPages());
+            count.add(counts);
+            return ResponseDto.success(count);
+        }else {
+            throw new IllegalArgumentException("잘못된 접근입니다.");
+        }
     }
 
+        @Transactional(readOnly = true)
+        public ResponseDto<?> getOneOrder(Long id, HttpServletRequest request) {
 
+            //case1)case2)token validity check
+            tokenProvider.tokenValidationCheck(request);
+
+            //comparison1) JPA 사용
+            //return ResponseDto.success(orderRepository.getOneOrder(id));
+
+            //comparison2)
+            Orders orders = orderRepository.getOneOrder(id);
+            OrderNestedResponseDto collectOne =
+                    new OrderNestedResponseDto(orders);
+
+            return ResponseDto.success(collectOne);
+        }
 }
