@@ -1,5 +1,6 @@
 package com.example.baedal.controller;
 
+import com.example.baedal.dto.request.OrderCheckRequestDto;
 import com.example.baedal.dto.request.OrderRequestDto;
 import com.example.baedal.dto.response.ResponseDto;
 import com.example.baedal.service.OrderService;
@@ -33,6 +34,8 @@ public class OrderController {
         return orderService.postOrderWithPessimisticRead(requestDto, request);
     }
 
+    //=============================================================================================================
+
     //주문 전체조회
     //@LogExecutionTime
     @GetMapping(value = "/api/orders")
@@ -57,10 +60,18 @@ public class OrderController {
 
     //queryDsl 없이 paging 처리
     @GetMapping (value = "api/v3/orders")
-    public ResponseDto<?> getAllStore(@PageableDefault(page = 0, size = 10)Pageable pageable,
+    public ResponseDto<?> getAllOrderWithJPAPaging(@PageableDefault(page = 0, size = 10)Pageable pageable,
                                       HttpServletRequest request) {
         return orderService.getAllOrdersWithJPAPaging(pageable,request);
     }
+
+    //consumer or producer
+    @PostMapping (value = "api/v4/orders")
+    public ResponseDto<?> getAllOrderByConsumerProducer(@PageableDefault(page = 0, size = 10)Pageable pageable,
+                                      HttpServletRequest request, @RequestBody OrderCheckRequestDto orderCheckRequestDto) {
+        return orderService.getAllOrdersByConsumerProducer(pageable,request,orderCheckRequestDto);
+    }
+
 
     //주문 상세 조회
     //@LogExecutionTime

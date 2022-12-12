@@ -1,7 +1,6 @@
 package com.example.baedal.repository.OrderRepository;
 
 import com.example.baedal.domain.*;
-import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +11,9 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.util.List;
 
 import static com.example.baedal.domain.QItem.*;
-import static com.example.baedal.domain.QMember.member;
 import static com.example.baedal.domain.QOrderHasItem.*;
 import static com.example.baedal.domain.QOrders.*;
-import static com.example.baedal.domain.QStore.*;
+import static com.example.baedal.domain.QStore.store;
 
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepositoryCustom{
@@ -143,5 +141,53 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
         return PageableExecutionUtils.getPage(ordersListWithMemberOrders,pageable,count::fetchOne);
     }
 
+    //memberId에 해당하는 주문내역 조회
+    @Override
+    public Page<Orders> getOrdersByMemberId(Long memberId, Pageable pageable) {
 
+        List<Orders> ordersListWithConsumer = queryFactory
+                .select(orders)
+                .from(orders)
+                .join(orders.member).fetchJoin()
+                .where(orders.member.memberId.eq(memberId))
+                .orderBy(orders.ordersId.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> count = queryFactory
+                .select(orders.count())
+                .from(orders);
+
+
+        return PageableExecutionUtils.getPage(ordersListWithConsumer,pageable,count::fetchOne);
+
+    }
+
+    //storeId에 해당하는 주문내역 조회
+    @Override
+    public Page<Orders> getOrdersByStoreId(Long storeId, Pageable pageable) {
+
+
+        //member의 storeId에 따른 주문내역 조회
+        List<Orders> ordersListWithProducer = queryFactory
+                .select(orders)
+                .from(orders)
+                .join(orders.member).fetchJoin()
+                .join(orders.orderHasItems, orderHasItem).fetchJoin()
+                .join(orderHasItem.item, item).fetchJoin()
+                .join(item.store, store).fetchJoin()
+                .where(store.storeId.eq(storeId))
+                .orderBy(orders.ordersId.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> count = queryFactory
+                .select(orders.count())
+                .from(orders);
+
+        return PageableExecutionUtils.getPage(ordersListWithProducer,pageable,count::fetchOne);
+
+    }
 }
