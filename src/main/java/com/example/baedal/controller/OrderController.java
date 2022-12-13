@@ -38,35 +38,31 @@ public class OrderController {
 
     //주문 전체조회
     //@LogExecutionTime
-    @GetMapping(value = "/api/orders")
-    public ResponseDto<?> getAllOrder(HttpServletRequest request) {
-        return orderService.getAllOrder(request);
+    @GetMapping(value = "/api/v1/orders")
+    public ResponseDto<?> getAllOrderWithJPA(HttpServletRequest request) {
+        return orderService.getAllOrderWithJPA(request);
     }
 
-    //주문 전체 조회 v2
-//    @GetMapping(value = "/api/v2/orders")
-//    public ResponseDto<?> getAllOrderWithPaging(
-//            @RequestParam(value = "offset", defaultValue = "0") int offset,
-//            @RequestParam(value = "limit", defaultValue = "10") int limit,
-//            ) {
-//        return orderService.getAllOrderWithPaging(pageable);
-//    }
-
     @GetMapping(value = "/api/v2/orders")
+    public ResponseDto<?> getAllOrderWithQuerydsl(HttpServletRequest request) {
+        return orderService.getAllOrderWithQuerydsl(request);
+    }
+
+    @GetMapping(value = "/api/v3/orders")
     public ResponseDto<?> getAllOrderWithPaging(@PageableDefault(page = 0, size = 10) Pageable pageable,
                                                 HttpServletRequest request) {
         return orderService.getAllOrderWithPaging(pageable,request);
     }
 
     //queryDsl 없이 paging 처리
-    @GetMapping (value = "api/v3/orders")
+    @GetMapping (value = "api/v4/orders")
     public ResponseDto<?> getAllOrderWithJPAPaging(@PageableDefault(page = 0, size = 10)Pageable pageable,
                                       HttpServletRequest request) {
         return orderService.getAllOrdersWithJPAPaging(pageable,request);
     }
 
     //consumer or producer
-    @PostMapping (value = "api/v4/orders")
+    @PostMapping (value = "api/orders")
     public ResponseDto<?> getAllOrderByConsumerProducer(@PageableDefault(page = 0, size = 10)Pageable pageable,
                                       HttpServletRequest request, @RequestBody OrderCheckRequestDto orderCheckRequestDto) {
         return orderService.getAllOrdersByConsumerProducer(pageable,request,orderCheckRequestDto);

@@ -81,24 +81,24 @@ public class OrderService {
         }
 
         //itemId에 해당하는 내용들을 찾아서 리스트로
-        long start1 = System.currentTimeMillis();
+        //long start1 = System.currentTimeMillis();
         List<Item> itemList = requestDto.getItemId()
                 .stream()
                 .map(item -> itemRepository.findByItemId(item).orElse(null))    //x-Lock(pessimistic_write)
                 .collect(toList());
-        log.info("itemRepo 조회 후 List로 만드는데 걸리는 시간: " + (System.currentTimeMillis() - start1) + "ms");
+        //log.info("itemRepo 조회 후 List로 만드는데 걸리는 시간: " + (System.currentTimeMillis() - start1) + "ms");
 
         //item을 OrderHasItems에 넣어두기
-        long start2 = System.currentTimeMillis();
+        //long start2 = System.currentTimeMillis();
         Orders order = Orders.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null)) //s-Lock
                 .store(storeRepository.findByStoreId(requestDto.getStoreId()).orElse(null)) //s-Lock
                 .build();
-        log.info("memberRepo, storeRepo 조회 후 Orders로 만드는데 걸리는 시간: " + (System.currentTimeMillis() - start2) + "ms");
+        //log.info("memberRepo, storeRepo 조회 후 Orders로 만드는데 걸리는 시간: " + (System.currentTimeMillis() - start2) + "ms");
 
-        long start3 = System.currentTimeMillis();
+        //long start3 = System.currentTimeMillis();
         orderRepository.save(order);    //s-Lock
-        log.info("orderRepo에 저장하는 시간: " + (System.currentTimeMillis() - start3) + "ms");
+        //log.info("orderRepo에 저장하는 시간: " + (System.currentTimeMillis() - start3) + "ms");
 
 //        List<OrderHasItem> orderHasItems = itemList.stream().map(item -> OrderHasItem.builder()
 //                .orders(order)
@@ -124,7 +124,7 @@ public class OrderService {
         //Integer stock = item.changeStock(amount);
         item.changeStock(amount);
         //System.out.println("stock : " + stock);
-        log.info("OrderHasItemRepo에 저장 후 재고 변경까지 하는데 걸리는 시간: " + (System.currentTimeMillis() - start4) + "ms");
+        //log.info("OrderHasItemRepo에 저장 후 재고 변경까지 하는데 걸리는 시간: " + (System.currentTimeMillis() - start4) + "ms");
 
     }
 
@@ -175,26 +175,23 @@ public class OrderService {
         }
 
         //itemId에 해당하는 내용들을 찾아서 리스트로
-        long start1 = System.currentTimeMillis();
+        //long start1 = System.currentTimeMillis();
         List<Item> itemList = requestDto.getItemId()
                 .stream()
                 .map(item -> itemRepository.findByItemIdWIthPessimisticWrite(item).orElse(null))    //s-Lock(pessimistic_write)
                 .collect(toList());
-        log.info("itemRepo 조회 후 List로 만드는데 걸리는 시간: " + (System.currentTimeMillis() - start1) + "ms");
 
         //item을 OrderHasItems에 넣어두기
-        long start2 = System.currentTimeMillis();
         Orders order = Orders.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null)) //s-Lock
                 .store(storeRepository.findByStoreId(requestDto.getStoreId()).orElse(null)) //s-Lock
                 .build();
-        log.info("memberRepo, storeRepo 조회 후 Orders로 만드는데 걸리는 시간: " + (System.currentTimeMillis() - start2) + "ms");
 
-        long start3 = System.currentTimeMillis();
+        //long start3 = System.currentTimeMillis();
         orderRepository.save(order);    //s-Lock
-        log.info("orderRepo에 저장하는 시간: " + (System.currentTimeMillis() - start3) + "ms");
+        //log.info("orderRepo에 저장하는 시간: " + (System.currentTimeMillis() - start3) + "ms");
 
-        long start4 = System.currentTimeMillis();
+        //long start4 = System.currentTimeMillis();
         for (int i=0; i<requestDto.getItemId().size(); i++){
             Item item = itemList.get(i);
             Integer amount = requestDto.getAmount().get(i);
@@ -215,7 +212,7 @@ public class OrderService {
                 itemRepository.updateItemAmount(item.getItemId(),amount);   //stock update, pessimistic lock(x-lock)
             }
 
-            log.info("OrderHasItemRepo에 저장 후, itemRepo에서 amount 찾고 exception, 재고 변경까지 하는데 걸리는 시간: " + (System.currentTimeMillis() - start4) + "ms");
+            //log.info("OrderHasItemRepo에 저장 후, itemRepo에서 amount 찾고 exception, 재고 변경까지 하는데 걸리는 시간: " + (System.currentTimeMillis() - start4) + "ms");
 
         }
 
@@ -264,24 +261,24 @@ public class OrderService {
         }
 
         //itemId에 해당하는 내용들을 찾아서 리스트로
-        long start1 = System.currentTimeMillis();
+        //long start1 = System.currentTimeMillis();
         List<Item> itemList = requestDto.getItemId()
                 .stream()
                 .map(item -> itemRepository.findByItemIdWithPessimisticRead(item).orElse(null))    //x-Lock(pessimistic_write)
                 .collect(toList());
-        log.info("itemRepo 조회 후 List로 만드는데 걸리는 시간: " + (System.currentTimeMillis() - start1) + "ms");
+        //log.info("itemRepo 조회 후 List로 만드는데 걸리는 시간: " + (System.currentTimeMillis() - start1) + "ms");
 
         //item을 OrderHasItems에 넣어두기
-        long start2 = System.currentTimeMillis();
+        //long start2 = System.currentTimeMillis();
         Orders order = Orders.builder()
                 .member(memberRepository.findByMemberId(requestDto.getMemberId()).orElse(null)) //s-Lock
                 .store(storeRepository.findByStoreId(requestDto.getStoreId()).orElse(null)) //s-Lock
                 .build();
-        log.info("memberRepo, storeRepo 조회 후 Orders로 만드는데 걸리는 시간: " + (System.currentTimeMillis() - start2) + "ms");
+        //log.info("memberRepo, storeRepo 조회 후 Orders로 만드는데 걸리는 시간: " + (System.currentTimeMillis() - start2) + "ms");
 
-        long start3 = System.currentTimeMillis();
+        //long start3 = System.currentTimeMillis();
         orderRepository.save(order);    //s-Lock
-        log.info("orderRepo에 저장하는 시간: " + (System.currentTimeMillis() - start3) + "ms");
+        //log.info("orderRepo에 저장하는 시간: " + (System.currentTimeMillis() - start3) + "ms");
 
 //        List<OrderHasItem> orderHasItems = itemList.stream().map(item -> OrderHasItem.builder()
 //                .orders(order)
@@ -291,7 +288,7 @@ public class OrderService {
 
         //orderHasItemRepository.saveAll(orderHasItems);
         //System.out.println(requestDto.getAmount());
-        long start4 = System.currentTimeMillis();
+        //long start4 = System.currentTimeMillis();
         for (int i = 0; i < requestDto.getItemId().size(); i++) {
             Item item = itemList.get(i);
             Integer amount = requestDto.getAmount().get(i);
@@ -307,7 +304,7 @@ public class OrderService {
             //Integer stock = item.changeStock(amount);
             item.changeStock(amount);
             //System.out.println("stock : " + stock);
-            log.info("OrderHasItemRepo에 저장 후 재고 변경까지 하는데 걸리는 시간: " + (System.currentTimeMillis() - start4) + "ms");
+            //log.info("OrderHasItemRepo에 저장 후 재고 변경까지 하는데 걸리는 시간: " + (System.currentTimeMillis() - start4) + "ms");
 
         }
 
@@ -324,7 +321,7 @@ public class OrderService {
 
 
     @Transactional(readOnly = true)
-    public ResponseDto<?> getAllOrder(HttpServletRequest request) {
+    public ResponseDto<?> getAllOrderWithJPA(HttpServletRequest request) {
 
         //case1)case2)token validity check
         tokenProvider.tokenValidationCheck(request);
@@ -347,7 +344,20 @@ public class OrderService {
         //memberId(memberName?), storeId(storeName?), itemId(name?), itemAmount, itemPrice, createdAt
 
         //comparison1) Repository findAll
-        //List<Orders> orders = orderRepository.findAll();
+        List<Orders> orders = orderRepository.findAll();
+        List<OrderNestedResponseDto> collect = orders.stream()
+                .map(OrderNestedResponseDto::new)
+                .collect(toList());
+
+        return ResponseDto.success(collect);
+
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<?> getAllOrderWithQuerydsl(HttpServletRequest request) {
+
+        //case1)case2)token validity check
+        tokenProvider.tokenValidationCheck(request);
 
         //==============================Refactor v2======================================
         List<Orders> orders = orderRepository.getAllOrder();
