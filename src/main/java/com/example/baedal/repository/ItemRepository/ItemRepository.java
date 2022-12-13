@@ -2,13 +2,11 @@ package com.example.baedal.repository.ItemRepository;
 
 
 import com.example.baedal.domain.Item;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
 import javax.persistence.LockModeType;
+import javax.persistence.QueryHint;
 import java.util.Optional;
 
 
@@ -24,6 +22,7 @@ public interface ItemRepository extends JpaRepository<Item, Long>, ItemRepositor
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select i from Item i where i.itemId = :id")
+    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "3000")})  //3초 타임 아웃
     Optional<Item> findByItemIdWIthPessimisticWrite(@Param("id") Long id);
 
     @Lock(LockModeType.PESSIMISTIC_READ)
