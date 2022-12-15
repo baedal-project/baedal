@@ -22,7 +22,7 @@ public interface ItemRepository extends JpaRepository<Item, Long>, ItemRepositor
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select i from Item i where i.itemId = :id")
-    //@QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "3000")})  //3초 타임 아웃
+    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "3000")})  //3초 타임 아웃
     Optional<Item> findByItemIdWIthPessimisticWrite(@Param("id") Long id);
 
     @Lock(LockModeType.PESSIMISTIC_READ)
